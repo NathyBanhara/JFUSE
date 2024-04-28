@@ -1,0 +1,34 @@
+author.string::= S
+book.object::= ? genres.array price.double pages.integer premiere_date.array year.integer author.string title.string
+characters.object::= {(S:R)+}
+
+director.string::= S
+duration.string::= [2, 3, 1]
+
+genres.array::= [drama, fantasy, mystery, adventure]
+
+hogwarts_will_always_be_there.object::=  characters.object media.array
+media.array::= [media.array.object]
+
+media.array.object::=  book.object type12.integer type11.integer type10.integer type9.integer type8.integer type7.integer type6.integer type5.integer type4.integer type3.integer type2.integer movie.object type.string
+movie.object::= ? genres.array price.double duration.string premiere_date.array year.integer director.string title.string
+pages.integer::= R
+premiere_date.array::= [integer, integer, integer]
+
+price.double::= R
+root::=  hogwarts_will_always_be_there.object
+title.string::= S
+type.string::= IF type.cinematography THEN movie.object
+IF type.text THEN book.object
+type10.integer::= R
+type11.integer::= R
+type12.integer::= R
+type2.integer::= R
+type3.integer::= R
+type4.integer::= R
+type5.integer::= R
+type6.integer::= R
+type7.integer::= R
+type8.integer::= R
+type9.integer::= R
+year.integer::= R
