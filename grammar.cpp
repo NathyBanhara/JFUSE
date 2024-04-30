@@ -272,8 +272,9 @@ void Grammar::writeStructure(string name, string parent, bool canPrint, string p
                     string nameEdge = "";
                     if (aux->edge->destiny->name == "") nameEdge = name; 
                     else nameEdge = aux->edge->destiny->name;
+                    string nameToDisplay = nameEdge;
                     nameEdge = nameEdge + "." + aux->edge->destiny->type;
-                    this->rules[ruleName] += " " + nameEdge;
+                    this->rules[ruleName] += " " + nameToDisplay + ": " + nameEdge;
                     writeStructure(nameEdge, name, canPrint, path, false);
                     aux = aux->next;
                 };
