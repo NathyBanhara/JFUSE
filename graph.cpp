@@ -583,18 +583,31 @@ void Graph::checkObject(Node *node)
 {
     double childrenCount = 0;
     double required = 0;
+    set<string> taggedUnions;
+
+    for (ListEdge *aux = node->edges; aux != NULL; aux = aux->next)
+    {
+        if (aux->edge->destiny->hasTaggedUnion) {
+            for (auto x : aux->edge->destiny->taggedUnions)
+            {
+                taggedUnions.insert(x);
+            }
+        }
+    }
 
     for (ListEdge *aux = node->edges; aux != NULL; aux = aux->next)
     {
         if (aux->edge->relationship == "parent")
         {
             childrenCount++;
-            if (aux->edge->probability > MAXOPTIONAL)
+            if (aux->edge->probability > MAXOPTIONAL 
+                || taggedUnions.find(aux->edge->destiny->name + "." + aux->edge->destiny->type) != taggedUnions.end())
             {
                 required++;
             }
         }
     }
+    taggedUnions.clear();
     if (required/childrenCount > MINREQUIREDTOBEATUPLE)
     {
         return;

@@ -218,17 +218,17 @@ int getRandomPages()
         movie.AddMember("genres", movieGenres, json.GetAllocator());
 
         obj1.AddMember("movie", movie, json.GetAllocator());
-        obj1.AddMember("type2", getRandomDay(), json.GetAllocator());
-        obj1.AddMember("type3", getRandomDay(), json.GetAllocator());
-        obj1.AddMember("type4", getRandomDay(), json.GetAllocator());
-        obj1.AddMember("type5", getRandomDay(), json.GetAllocator());
-        obj1.AddMember("type6", getRandomDay(), json.GetAllocator());
-        obj1.AddMember("type7", getRandomDay(), json.GetAllocator());
-        obj1.AddMember("type8", getRandomDay(), json.GetAllocator());
-        obj1.AddMember("type9", getRandomDay(), json.GetAllocator());
-        obj1.AddMember("type10", getRandomDay(), json.GetAllocator());
-        obj1.AddMember("type11", getRandomDay(), json.GetAllocator());
-        obj1.AddMember("type12", getRandomDay(), json.GetAllocator());
+        //obj1.AddMember("type2", getRandomDay(), json.GetAllocator());
+        //obj1.AddMember("type3", getRandomDay(), json.GetAllocator());
+        //obj1.AddMember("type4", getRandomDay(), json.GetAllocator());
+        //obj1.AddMember("type5", getRandomDay(), json.GetAllocator());
+        //obj1.AddMember("type6", getRandomDay(), json.GetAllocator());
+        //obj1.AddMember("type7", getRandomDay(), json.GetAllocator());
+        //obj1.AddMember("type8", getRandomDay(), json.GetAllocator());
+        //obj1.AddMember("type9", getRandomDay(), json.GetAllocator());
+        //obj1.AddMember("type10", getRandomDay(), json.GetAllocator());
+        //obj1.AddMember("type11", getRandomDay(), json.GetAllocator());
+        //obj1.AddMember("type12", getRandomDay(), json.GetAllocator());
 
         media.PushBack(obj1, json.GetAllocator());
 
@@ -268,17 +268,17 @@ int getRandomPages()
         book.AddMember("genres", bookGenres, json.GetAllocator());
 
         obj2.AddMember("book", book, json.GetAllocator());
-        obj2.AddMember("type2", getRandomDay(), json.GetAllocator());
-        obj2.AddMember("type3", getRandomDay(), json.GetAllocator());
-        obj2.AddMember("type4", getRandomDay(), json.GetAllocator());
-        obj2.AddMember("type5", getRandomDay(), json.GetAllocator());
-        obj2.AddMember("type6", getRandomDay(), json.GetAllocator());
-        obj2.AddMember("type7", getRandomDay(), json.GetAllocator());
-        obj2.AddMember("type8", getRandomDay(), json.GetAllocator());
-        obj2.AddMember("type9", getRandomDay(), json.GetAllocator());
-        obj2.AddMember("type10", getRandomDay(), json.GetAllocator());
-        obj2.AddMember("type11", getRandomDay(), json.GetAllocator());
-        obj2.AddMember("type12", getRandomDay(), json.GetAllocator());
+        //obj2.AddMember("type2", getRandomDay(), json.GetAllocator());
+        //obj2.AddMember("type3", getRandomDay(), json.GetAllocator());
+        //obj2.AddMember("type4", getRandomDay(), json.GetAllocator());
+        //obj2.AddMember("type5", getRandomDay(), json.GetAllocator());
+        //obj2.AddMember("type6", getRandomDay(), json.GetAllocator());
+        //obj2.AddMember("type7", getRandomDay(), json.GetAllocator());
+        //obj2.AddMember("type8", getRandomDay(), json.GetAllocator());
+        //obj2.AddMember("type9", getRandomDay(), json.GetAllocator());
+        //obj2.AddMember("type10", getRandomDay(), json.GetAllocator());
+        //obj2.AddMember("type11", getRandomDay(), json.GetAllocator());
+        //obj2.AddMember("type12", getRandomDay(), json.GetAllocator());
 
         media.PushBack(obj2, json.GetAllocator());
 
