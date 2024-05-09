@@ -1,125 +1,22 @@
-$oid.string::= S
-_id.object::=  $oid: $oid.string
-attributes.object::= {()+}
+author.string::= S
+book.object::= ? genres: genres.array price: price.double pages: pages.integer premiere_date: premiere_date.array year: year.integer author: author.string title: title.string
+characters.object::= {(S:R)+}
 
-bounding_box.object::=  coordinates: coordinates.array type: type.string
-channels.object::= {(S:array)+}
+director.string::= S
+duration.string::= S
+genres.array::= [adventure, drama, mystery, fantasy]
 
-contributors.null::= null
-contributors_enabled.boolean::= B
-coordinates.null::= null
-coordinates.object::= ? coordinates: coordinates.array type: type.string
-country.string::= S
-country_code.string::= S
-created_at.string::= S
-default_profile.boolean::= B
-default_profile_image.boolean::= B
-description.null::= ?null
-description.string::= ?S
-display_text_range.array::= [integer, integer]
+hogwarts_will_always_be_there.object::=  characters: characters.object media: media.array
+media.array::= [media.array.object]
 
-display_url.string::= S
-entities.object::=  media: media.array symbols: symbols.array user_mentions: user_mentions.array urls: urls.array hashtags: hashtags.array
-expanded_url.string::= S
-extended_entities.object::=  media: media.array
-extended_tweet.object::=  extended_entities: extended_entities.object entities: entities.object display_text_range: display_text_range.array full_text: full_text.string
-favorite_count.integer::= R
-favorited.boolean::= B
-favourites_count.integer::= R
-filter_level.string::= low
-follow_request_sent.null::= null
-followers_count.integer::= R
-following.null::= null
-friends_count.integer::= R
-full_name.string::= S
-full_text.string::= S
-geo.null::= null
-geo.object::= ? coordinates: coordinates.array type: type.string
-geo_enabled.boolean::= B
-hashtags.array::= [hashtags.array.object]
+media.array.object::=  book: book.object movie: movie.object type: type.string
+movie.object::= ? genres: genres.array price: price.double duration: duration.string premiere_date: premiere_date.array year: year.integer director: director.string title: title.string
+pages.integer::= R
+premiere_date.array::= [integer, integer, integer]
 
-hashtags.array.object::= ? indices: indices.array text: text.string
-id.double::= R
-id.integer::= ?R
-id.string::= S
-id_str.string::= S
-in_reply_to_screen_name.null::= null
-in_reply_to_screen_name.string::= ?S
-in_reply_to_status_id.double::= ?R
-in_reply_to_status_id.null::= null
-in_reply_to_status_id_str.null::= null
-in_reply_to_status_id_str.string::= ?S
-in_reply_to_user_id.double::= ?R
-in_reply_to_user_id.integer::= ?R
-in_reply_to_user_id.null::= null
-in_reply_to_user_id_str.null::= null
-in_reply_to_user_id_str.string::= ?S
-indices.array::= [integer, integer]
-
-is_quote_status.boolean::= B
-is_translator.boolean::= B
-keywords.array::= [string]
-
-lang.string::= S
-listed_count.integer::= R
-location.null::= ?null
-location.string::= ?S
-media.array::= ?[media.array.object]
-
-media.array.object::= {(S:array, S:R, S:R, S:object, S:S)+}
-
-name.string::= S
-notifications.null::= null
-place.null::= null
-place.object::= ? attributes: attributes.object bounding_box: bounding_box.object country: country.string country_code: country_code.string full_name: full_name.string name: name.string place_type: place_type.string url: url.string id: id.string
-place_type.string::= [admin, country, city]
-
-possibly_sensitive.boolean::= B
-profile_background_color.string::= S
-profile_background_image_url.string::= S
-profile_background_image_url_https.string::= S
-profile_background_tile.boolean::= B
-profile_banner_url.string::= ?S
-profile_image_url.string::= S
-profile_image_url_https.string::= S
-profile_link_color.string::= S
-profile_sidebar_border_color.string::= S
-profile_sidebar_fill_color.string::= S
-profile_text_color.string::= S
-profile_use_background_image.boolean::= B
-protected.boolean::= B
-quote_count.integer::= R
-quoted_status.object::= ? in_reply_to_user_id: in_reply_to_user_id.double in_reply_to_screen_name: in_reply_to_screen_name.string in_reply_to_user_id_str: in_reply_to_user_id_str.string in_reply_to_user_id: in_reply_to_user_id.integer in_reply_to_status_id_str: in_reply_to_status_id_str.string in_reply_to_status_id: in_reply_to_status_id.double place: place.object extended_tweet: extended_tweet.object quoted_status_id_str: quoted_status_id_str.string quoted_status_id: quoted_status_id.double possibly_sensitive: possibly_sensitive.boolean extended_entities: extended_entities.object display_text_range: display_text_range.array lang: lang.string filter_level: filter_level.string retweeted: retweeted.boolean favorited: favorited.boolean entities: entities.object favorite_count: favorite_count.integer retweet_count: retweet_count.integer reply_count: reply_count.integer quote_count: quote_count.integer is_quote_status: is_quote_status.boolean contributors: contributors.null place: place.null coordinates: coordinates.null geo: geo.null user: user.object in_reply_to_screen_name: in_reply_to_screen_name.null in_reply_to_user_id_str: in_reply_to_user_id_str.null in_reply_to_user_id: in_reply_to_user_id.null in_reply_to_status_id_str: in_reply_to_status_id_str.null in_reply_to_status_id: in_reply_to_status_id.null truncated: truncated.boolean source: source.string text: text.string id_str: id_str.string id: id.double created_at: created_at.string
-quoted_status_id.double::= ?R
-quoted_status_id_str.string::= ?S
-reply_count.integer::= R
-retweet_count.integer::= R
-retweeted.boolean::= B
-retweeted_status.object::=  coordinates: coordinates.object geo: geo.object place: place.object in_reply_to_user_id: in_reply_to_user_id.integer quoted_status: quoted_status.object quoted_status_id_str: quoted_status_id_str.string quoted_status_id: quoted_status_id.double in_reply_to_screen_name: in_reply_to_screen_name.string in_reply_to_user_id_str: in_reply_to_user_id_str.string in_reply_to_user_id: in_reply_to_user_id.double in_reply_to_status_id_str: in_reply_to_status_id_str.string in_reply_to_status_id: in_reply_to_status_id.double extended_tweet: extended_tweet.object lang: lang.string filter_level: filter_level.string possibly_sensitive: possibly_sensitive.boolean retweeted: retweeted.boolean favorited: favorited.boolean extended_entities: extended_entities.object entities: entities.object favorite_count: favorite_count.integer retweet_count: retweet_count.integer reply_count: reply_count.integer quote_count: quote_count.integer is_quote_status: is_quote_status.boolean contributors: contributors.null place: place.null coordinates: coordinates.null geo: geo.null user: user.object in_reply_to_screen_name: in_reply_to_screen_name.null in_reply_to_user_id_str: in_reply_to_user_id_str.null in_reply_to_user_id: in_reply_to_user_id.null in_reply_to_status_id_str: in_reply_to_status_id_str.null in_reply_to_status_id: in_reply_to_status_id.null truncated: truncated.boolean source: source.string display_text_range: display_text_range.array text: text.string id_str: id_str.string id: id.double created_at: created_at.string
-root::=  coordinates: coordinates.object geo: geo.object place: place.object in_reply_to_user_id: in_reply_to_user_id.integer extended_entities: extended_entities.object in_reply_to_screen_name: in_reply_to_screen_name.string in_reply_to_user_id_str: in_reply_to_user_id_str.string in_reply_to_user_id: in_reply_to_user_id.double in_reply_to_status_id_str: in_reply_to_status_id_str.string in_reply_to_status_id: in_reply_to_status_id.double quoted_status: quoted_status.object quoted_status_id_str: quoted_status_id_str.string quoted_status_id: quoted_status_id.double extended_tweet: extended_tweet.object display_text_range: display_text_range.array possibly_sensitive: possibly_sensitive.boolean retweeted_status: retweeted_status.object keywords: keywords.array channels: channels.object timestamp_ms: timestamp_ms.string lang: lang.string filter_level: filter_level.string retweeted: retweeted.boolean favorited: favorited.boolean entities: entities.object favorite_count: favorite_count.integer retweet_count: retweet_count.integer reply_count: reply_count.integer quote_count: quote_count.integer is_quote_status: is_quote_status.boolean contributors: contributors.null place: place.null coordinates: coordinates.null geo: geo.null user: user.object in_reply_to_screen_name: in_reply_to_screen_name.null in_reply_to_user_id_str: in_reply_to_user_id_str.null in_reply_to_user_id: in_reply_to_user_id.null in_reply_to_status_id_str: in_reply_to_status_id_str.null in_reply_to_status_id: in_reply_to_status_id.null truncated: truncated.boolean source: source.string text: text.string id_str: id_str.string id: id.double created_at: created_at.string _id: _id.object
-screen_name.string::= S
-source.string::= S
-statuses_count.integer::= R
-symbols.array::= []
-
-text.string::= S
-time_zone.null::= ?null
-time_zone.string::= ?S
-timestamp_ms.string::= S
-translator_type.string::= [badged, regular, none]
-
-truncated.boolean::= B
-type.string::= [Point, animated_gif, Polygon, video, photo]
-
-url.null::= ?null
-url.string::= S
-urls.array::= [urls.array.object]
-
-urls.array.object::= ? indices: indices.array display_url: display_url.string expanded_url: expanded_url.string url: url.string
-user.object::=  profile_banner_url: profile_banner_url.string url: url.string time_zone: time_zone.null utc_offset: utc_offset.null description: description.null location: location.null id: id.double notifications: notifications.null follow_request_sent: follow_request_sent.null following: following.null default_profile_image: default_profile_image.boolean default_profile: default_profile.boolean profile_image_url_https: profile_image_url_https.string profile_image_url: profile_image_url.string profile_use_background_image: profile_use_background_image.boolean profile_text_color: profile_text_color.string profile_sidebar_fill_color: profile_sidebar_fill_color.string profile_sidebar_border_color: profile_sidebar_border_color.string profile_link_color: profile_link_color.string profile_background_tile: profile_background_tile.boolean profile_background_image_url_https: profile_background_image_url_https.string profile_background_image_url: profile_background_image_url.string profile_background_color: profile_background_color.string is_translator: is_translator.boolean contributors_enabled: contributors_enabled.boolean lang: lang.string geo_enabled: geo_enabled.boolean time_zone: time_zone.string utc_offset: utc_offset.integer created_at: created_at.string statuses_count: statuses_count.integer favourites_count: favourites_count.integer listed_count: listed_count.integer friends_count: friends_count.integer followers_count: followers_count.integer verified: verified.boolean protected: protected.boolean translator_type: translator_type.string description: description.string url: url.null location: location.string screen_name: screen_name.string name: name.string id_str: id_str.string id: id.integer
-user_mentions.array::= [user_mentions.array.object]
-
-user_mentions.array.object::= ? id: id.double indices: indices.array id_str: id_str.string id: id.integer name: name.string screen_name: screen_name.string
-utc_offset.integer::= ?R
-utc_offset.null::= ?null
-verified.boolean::= B
+price.double::= R
+root::=  hogwarts_will_always_be_there: hogwarts_will_always_be_there.object
+title.string::= S
+type.string::= IF type.cinematography THEN movie.object
+IF type.text THEN book.object
+year.integer::= R

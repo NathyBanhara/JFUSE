@@ -16,9 +16,9 @@ int main()
     cin.tie(0);
     
     //std::ifstream text("example.json");
-    std::ifstream text("extractTwitter.json");
+    //std::ifstream text("extractTwitter.json");
     //std::ifstream text("extractPrescrip.json");
-    //std::ifstream text("data.json");
+    std::ifstream text("data.json");
     //std::ifstream text("doc.json");
 
     // create a SAX event consumer object

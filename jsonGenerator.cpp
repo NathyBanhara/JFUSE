@@ -1,4 +1,4 @@
-#include <iostream>
+/*#include <iostream>
 #include <iomanip>
 #include <fstream>
 #include "include/rapidjson/document.h"
@@ -132,7 +132,7 @@ int getRandomPages()
     return random_number;
 }
 
-/*int main()
+int main()
 {
     /*{
         "media": [{
@@ -170,10 +170,16 @@ int getRandomPages()
 
     // object: hogwarts_will_always_be_there
 
-    /*int objects = 100;
+    /*int objects = 100000;
 
     Document json;
     json.SetObject();
+
+    std::ofstream ofs("data.json");
+    if (!ofs.is_open()) {
+        std::cerr << "Failed to open file for writing." << std::endl;
+        return 1;
+    }
 
     for (int i = 0; i < objects; i++)
     {
@@ -318,19 +324,22 @@ int getRandomPages()
         mainObj.AddMember("characters", characters, json.GetAllocator());
 
         json.AddMember("hogwarts_will_always_be_there", mainObj, json.GetAllocator());
-    }
-    
-    StringBuffer buffer;
-    PrettyWriter<StringBuffer> writer(buffer);
-    writer.SetFormatOptions(PrettyFormatOptions::kFormatDefault);
-    json.Accept(writer);
 
-    std::ofstream ofs("data.json");
-    if (!ofs.is_open()) {
-        std::cerr << "Failed to open file for writing." << std::endl;
-        return 1;
+        if ((i + 1) % 100 == 0 || i == objects - 1) {
+            StringBuffer buffer;
+            PrettyWriter<StringBuffer> writer(buffer);
+            writer.SetFormatOptions(PrettyFormatOptions::kFormatDefault);
+            json.Accept(writer);
+            ofs << buffer.GetString();
+            if (i != objects - 1) {
+                ofs << ',';
+            }
+            ofs << std::endl;
+
+            json.SetObject();
+        }
     }
-    ofs << buffer.GetString() << std::endl;
+
     ofs.close();
 
     return 0;
