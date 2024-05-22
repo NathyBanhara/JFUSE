@@ -298,39 +298,6 @@ void Graph::insertEdge(string origin, string destiny, string relationshipType, s
     }
 }
 
-/*
-void Graph::printGraph()
-{
-    for (auto x : this->lists.listNodes)
-    {
-        if (x.second->isSomeonesTaggedUnion)
-            cout << x.second->name << "\n";
-        /*
-        cout << x.first << " ";
-        for (auto z : x.second->enumerate)
-        {
-            cout << z.first << " ";
-        }
-        cout << "\n";*/
-    //}
-//}
-/*
-void Graph::printGraph()
-{
-    for (auto x : this->lists.listNodes)
-    {
-        cout << x.first << " -> " << flush;
-        if (x.second->isEnum)
-        {
-            for (auto y : x.second->enumerate)
-            {
-                cout << y.first << ", ";
-            }
-        }
-        cout << "\n";
-    }
-}*/
-
 void Graph::printGraph()
 {
     for (auto x : this->lists.listNodes)
@@ -385,10 +352,6 @@ void Graph::checkEnums()
 
                 for (auto e : x.second->enumerate)
                 {
-                    if (x.second->name == "profile_background_image_url")
-                    {
-                        cout << "profile_background_image_url" << "\n";
-                    }
                     if (e.first == "" || e.first == " ")
                     {
                         emptySpaceCount++;
@@ -695,48 +658,6 @@ void Graph::printTaggedUnions()
         }
     }
 }
-/*
-//Com probabilidade
-void Graph::printGraph()
-{
-    for (int i = 0; i < numVertexes; i++)
-    {
-        if (listNodes[i] == NULL) return;
-        cout << listNodes[i]->name << "-> " << listNodes[i]->type;
-        printf(" -> %d: ", listNodes[i]->counter);
-        for (Edge *aux = listNodes[i]->next; aux != NULL; aux = aux->next)
-        {
-            if (aux->index == -1) 
-                cout << " " << " -> " << aux->probability << ";";
-            else
-                cout << listNodes[aux->index]->name << " -> " << listNodes[aux->index]->type << " -> " << aux->probability << ";";
-        }
-        printf("\n");
-    }
-}
-*/
-/*
-void Graph::printArrays()
-{
-    for (auto x : this->lists.listNodes)
-    {
-        if (x.second->type == "array")
-        {
-            if (x.second->checkArrayInfo)
-            {
-                for (auto y : x.second->arrayInfo)
-                {
-                    cout << x.first << " " << y.first << " -> " << y.second->counter << ": ";
-                    for (auto w : y.second->set)
-                    {
-                        cout << ", " << w.first;
-                    }
-                    cout << "\n";
-                }
-            }
-        }
-    }
-}*/
 
 void Graph::percentualEdge()
 {
@@ -744,61 +665,4 @@ void Graph::percentualEdge()
     {
         x.second->probability = ((float)x.second->destiny->counter/x.second->origin->counter);
     }
-}
-/*
-void Graph::checkObject(Node *node)
-{
-    int childrenCount = 0;
-    int required = 0;
-    unordered_map<string, int> types; //type, counter
-
-    for (ListEdge *aux = node->edges; aux != NULL; aux = aux->next)
-    {
-        if (aux->edge->relationship == "parent")
-        {
-            childrenCount++;
-            if (aux->edge->probability > MAXOPTIONAL)
-            {
-                required++;
-                if (types[aux->edge->destiny->type]) types[aux->edge->destiny->type]++;
-                else types[aux->edge->destiny->type] = 1;
-            }
-        }
-    }
-    if (required/childrenCount > MINREQUIREDTOBEATUPLE)
-    {
-        return;
-    }
-    else
-    {
-        string biggestTypeOccurance = "";
-        for (auto x : types)
-        {
-            if (biggestTypeOccurance == "")
-            {
-                biggestTypeOccurance = x.first;
-            }
-            else if (x.second > types[biggestTypeOccurance])
-            {
-                biggestTypeOccurance = x.first;
-            }
-        }
-
-        int differentTypes = 0;
-
-        for (auto x : types)
-        {
-            if (x.first != biggestTypeOccurance)
-            {
-                differentTypes += x.second;
-            }
-        }
-
-        // CALCULA A DIFERENÇA?
-    }
-}
-*/
-
-void Graph::freeGraph()
-{
 }

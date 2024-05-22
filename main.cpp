@@ -15,19 +15,15 @@ int main()
     ios::sync_with_stdio(0); 
     cin.tie(0);
     
-    //std::ifstream text("example.json");
     //std::ifstream text("extractTwitter.json");
-    //std::ifstream text("extractPrescrip.json");
-    std::ifstream text("data.json");
+    std::ifstream text("extractPrescrip.json");
+    //std::ifstream text("data.json");
     //std::ifstream text("doc.json");
 
-    // create a SAX event consumer object
     sax_event_consumer sec;
 
-    // parse JSON
     bool result = json::sax_parse(text, &sec);
     
-    // output the result of sax_parse
     std::cout << "\nresult: " << std::boolalpha << result << "\n" << flush;
 
     printf("\n");

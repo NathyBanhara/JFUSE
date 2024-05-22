@@ -304,6 +304,5 @@ bool sax_event_consumer::binary(json::binary_t& val)
 
 bool sax_event_consumer::parse_error(std::size_t position, const std::string& last_token, const json::exception& ex)
 {
-    //events.push_back("parse_error(position=" + std::to_string(position) + ", last_token=" + last_token + ",\n            ex=" + std::string(ex.what()) + ")");
     return false;
 }

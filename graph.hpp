@@ -22,10 +22,10 @@ struct Node
     string name;
     int counter;
     string type;
-    unordered_map<string, int> enumerate; // value, counter
-    unordered_map<string, int> paths; //string -> path int -> counter (arrumar para paths grandes)
-    unordered_map<int, Collection*> arrayInfo; //total, structure
-    vector<string> taggedUnions; //tagged unions que originou
+    unordered_map<string, int> enumerate;
+    unordered_map<string, int> paths;
+    unordered_map<int, Collection*> arrayInfo;
+    vector<string> taggedUnions;
     Collection *tuple;
     bool hasTaggedUnion;
     bool isSomeonesTaggedUnion;
@@ -44,10 +44,8 @@ struct Edge
     int counter;
     float probability;
     bool isTaggedUnion;
-    unordered_map<string, int> taggedUnion; //string -> value (se não for string, converte pra string)
+    unordered_map<string, int> taggedUnion;
 };
-
-//Enumerate = (key: its value, value: count (how many times the relationship happened))
 
 struct ListEdge
 {
@@ -95,9 +93,6 @@ struct Collection
     unordered_map<string, int> structure; //type // counter
 };
 
-// enum é uma sequência de caracteres sem espaço
-// dar free em tudo
-
 class Graph
 {
     public:
@@ -127,7 +122,6 @@ class Graph
         void printTaggedUnions();
         void printTypes();
         void printArrays();
-        void freeGraph(); //CONFERIR
 };
 
 #endif
