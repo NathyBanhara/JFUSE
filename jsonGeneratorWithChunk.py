@@ -40,11 +40,7 @@ def main():
         for i in range(objects):
             file.write(f'    "hogwarts_will_always_be_there": ')
             file.write('{\n')
-
-            # Media
             file.write('        "media": [\n')
-
-            # Movie
             file.write('            {\n')
             file.write('                "type": "cinematography",\n')
             file.write('                "movie": {\n')
@@ -65,8 +61,6 @@ def main():
                 file.write('["fantasy", "drama"]\n')
             file.write('                }\n')
             file.write('            },\n')
-
-            # Book
             file.write('            {\n')
             file.write('                "type": "text",\n')
             file.write('                "book": {\n')
@@ -89,8 +83,6 @@ def main():
             file.write('            }\n')
 
             file.write('        ],\n')
-
-            # Characters
             file.write('        "characters": {\n')
             for _ in range(6):
                 file.write(f'            "{generate_random_string(21)}": {get_random_age()}')

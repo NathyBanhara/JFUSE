@@ -608,7 +608,7 @@ void Graph::checkObject(Node *node)
         }
     }
     taggedUnions.clear();
-    if (required/childrenCount > MINREQUIREDTOBEATUPLE)
+    if (required/childrenCount >= MINREQUIREDTOBEATUPLE)
     {
         return;
     }
