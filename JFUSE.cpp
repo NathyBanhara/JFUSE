@@ -10,15 +10,14 @@
 
 using json = nlohmann::json;
 
-int main()
+int main(int argc, char *argv[])
 {
     ios::sync_with_stdio(0); 
     cin.tie(0);
+
+    string jsonFilename = argv[2];
     
-    //std::ifstream text("extractTwitter.json");
-    std::ifstream text("extractPrescrip.json");
-    //std::ifstream text("data.json");
-    //std::ifstream text("doc.json");
+    std::ifstream text(jsonFilename);
 
     sax_event_consumer sec;
 
