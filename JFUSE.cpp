@@ -16,6 +16,7 @@ int main(int argc, char *argv[])
     cin.tie(0);
 
     string jsonFilename = argv[2];
+    string fileGenerated = argv[3];
     
     std::ifstream text(jsonFilename);
 
@@ -38,7 +39,7 @@ int main(int argc, char *argv[])
     sec.queue.freeQueue();
     cout << "\n\n";
 
-    Grammar grammar = Grammar(sec.graph);
+    Grammar grammar = Grammar(sec.graph, fileGenerated);
 
     grammar.writeStructure("start_object.object", "", false, "", false);
     grammar.printAll();

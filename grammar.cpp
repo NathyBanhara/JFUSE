@@ -7,10 +7,10 @@
 #include "definitions/define.hpp"
 #include <set>
 
-Grammar::Grammar(Graph graph)
+Grammar::Grammar(Graph graph, string fileGenerated)
 {
     this->graph = graph;
-    structure.open("structure.txt");
+    structure.open(fileGenerated);
 }
 
 string writeType(string type)

@@ -24,7 +24,7 @@ class Grammar
         map<string, string> rules;
 
     public:
-        Grammar(Graph graph);
+        Grammar(Graph graph, string fileGenerated);
         void writeStructure(string name, string parent, bool canPrint, string path, bool isObjectFromArray);
         void writeTaggedUnions(string origin, string parent, string path, string ruleName);
         void writeRepeatedKeys(string path, string name, string pathBefore, string parent, bool canPrint, string ruleName);
