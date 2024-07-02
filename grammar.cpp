@@ -193,14 +193,13 @@ void Grammar::writeStructure(string name, string parent, bool canPrint, string p
 
     if (name != "start_object.object") {
         ruleName = name;
-        this->rules[ruleName] = ruleName + "::= ";
     }
 
     if (this->graph.lists.listNodes[name]->type != "object" && this->graph.lists.listNodes[name]->type != "array")
     {
         if (!this->graph.lists.listNodes[name]->isEnum)
         {   
-            this->rules[ruleName] += writeType(this->graph.lists.listNodes[name]->type) + "\n";
+            this->rules[parent] += ": " + writeType(this->graph.lists.listNodes[name]->type) + "\n";
         }
         else
         {
@@ -208,26 +207,29 @@ void Grammar::writeStructure(string name, string parent, bool canPrint, string p
             {
                 for (auto x : this->graph.lists.listNodes[name]->enumerate)
                 {
-                    this->rules[ruleName] += x.first;
+                    this->rules[parent] += x.first;
                 }
             }
             else if (!this->graph.lists.listNodes[name]->hasTaggedUnion)
             {
-                this->rules[ruleName] += "[";
+                this->rules[parent] += ": ";
+                this->rules[parent] += "[";
                 int i = 0;
                 for (auto x : this->graph.lists.listNodes[name]->enumerate)
                 {
                     if (i == 0)
                     {
-                        this->rules[ruleName] += x.first;
+                        this->rules[parent] += x.first;
                         i = 1;
                     }
                     else
                     {
-                        this->rules[ruleName] += ", " + x.first;
+                        this->rules[parent] += ", " + x.first;
                     }
                 }
-                this->rules[ruleName] += "]\n";
+                this->rules[parent] += "]\n";
+            } else {
+                this->rules[ruleName] = ruleName + "::= ";
             }
             writeTaggedUnions(name, parent, pathBefore, ruleName);
         }
@@ -239,6 +241,7 @@ void Grammar::writeStructure(string name, string parent, bool canPrint, string p
     }
     else if (this->graph.lists.listNodes[name]->type == "object" || this->graph.lists.listNodes[name]->type == "array")
     {
+        this->rules[ruleName] = ruleName + "::= ";
         if (this->graph.lists.listNodes[name]->type == "object")
         {
             ListEdge *aux = this->graph.lists.listNodes[name]->edges;
@@ -253,7 +256,14 @@ void Grammar::writeStructure(string name, string parent, bool canPrint, string p
                     else nameEdge = aux->edge->destiny->name;
                     string nameToDisplay = nameEdge;
                     nameEdge = nameEdge + "." + aux->edge->destiny->type;
-                    this->rules[ruleName] += " " + nameToDisplay + ": " + nameEdge;
+                    this->rules[ruleName] += " ";
+                    this->rules[ruleName] += nameToDisplay;
+                    /*if (aux->edge->destiny->hasTaggedUnion 
+                        || aux->edge->destiny->type == "object"
+                        || aux->edge->destiny->type == "array")
+                    {*/
+                        this->rules[ruleName] =+ ": " + nameEdge;
+  //                  }
                     writeStructure(nameEdge, name, canPrint, path, false);
                     aux = aux->next;
                 };
