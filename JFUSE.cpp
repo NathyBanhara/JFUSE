@@ -31,6 +31,7 @@ int main(int argc, char *argv[])
     sec.graph.checkEnums();
 
     sec.graph.getTaggedUnions(sec.queue.front()->name, sec.queue.front()->type, " ", sec.queue);
+    sec.graph.checkTaggedUnions();
 
     sec.graph.percentualEdge();
 

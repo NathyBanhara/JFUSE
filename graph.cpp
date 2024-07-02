@@ -179,6 +179,39 @@ void Graph::saveTaggedUnion(Queue siblingQueue)
     }
 }
 
+void Graph::checkTaggedUnions()
+{
+    for (auto x : this->lists.listNodes)
+    {
+        if (!x.second->hasTaggedUnion)
+        {
+            continue;
+        }
+
+        bool hasMoreThanOneDestiny = false;
+        string destiny = "";
+
+        for (auto y : x.second->taggedUnions)
+        {   
+            if (destiny == "")
+            {
+                destiny = y;
+            } 
+            else if (y != destiny) {
+                hasMoreThanOneDestiny = true;
+                this->lists.listNodes[y]->isSomeonesTaggedUnion = false;
+                break;
+            }
+        }
+
+        if (!hasMoreThanOneDestiny)
+        {
+            x.second->hasTaggedUnion = false;
+            x.second->taggedUnions.clear();
+        }
+    }
+}
+
 void Graph::insertNode(string name, string type, string path, Node *parent, Node *parentParent)
 {
     if (parent != NULL && parent->type == "object" && parentParent->type == "array")

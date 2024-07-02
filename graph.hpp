@@ -116,6 +116,7 @@ class Graph
         void checkIfItsEqual(queue<std::string> children, Node *node);
         void checkArrayEnum(QueueStruct *q, vector<string> enums, string name);
         void setPath(string path, string name);
+        void checkTaggedUnions();
         void checkArrayType();
         void percentualEdge();
         void printGraph();
