@@ -211,7 +211,7 @@ void Grammar::writeStructure(string name, string parent, bool canPrint, string p
                     this->rules[ruleName] += x.first;
                 }
             }
-            else
+            else if (!this->graph.lists.listNodes[name]->hasTaggedUnion)
             {
                 this->rules[ruleName] += "[";
                 int i = 0;
