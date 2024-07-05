@@ -54,6 +54,7 @@ def main():
             file.write('                    ],\n')
             file.write(f'                    "duration": "{get_random_duration()}",\n')
             file.write(f'                    "price": {get_random_price()},\n')
+            file.write(f'                    "hey": "hey",\n')
             file.write('                    "genres": ')
             if (i + 1) % 2 == 0:
                 file.write('["adventure", "mystery"]\n')
@@ -74,6 +75,7 @@ def main():
             file.write('                    ],\n')
             file.write(f'                    "pages": {get_random_pages()},\n')
             file.write(f'                    "price": {get_random_price()},\n')
+            file.write(f'                    "hey": "hey",\n')
             file.write('                    "genres": ')
             if (i + 1) % 2 == 0:
                 file.write('["adventure", "mystery"]\n')

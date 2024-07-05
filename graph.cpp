@@ -199,7 +199,6 @@ void Graph::checkTaggedUnions()
             } 
             else if (y != destiny) {
                 hasMoreThanOneDestiny = true;
-                this->lists.listNodes[y]->isSomeonesTaggedUnion = false;
                 break;
             }
         }
@@ -208,6 +207,7 @@ void Graph::checkTaggedUnions()
         {
             x.second->hasTaggedUnion = false;
             x.second->taggedUnions.clear();
+            this->lists.listNodes[destiny]->isSomeonesTaggedUnion = false;
         }
     }
 }
