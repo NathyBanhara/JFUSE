@@ -27,7 +27,7 @@ class Grammar
         Grammar(Graph graph, string fileGenerated);
         void writeStructure(string name, string parent, bool canPrint, string path, bool isObjectFromArray);
         void writeTaggedUnions(string origin, string parent, string path, string ruleName);
-        void writeRepeatedKeys(string path, string name, string pathBefore, string parent, bool canPrint, string ruleName);
+        void writeRepeatedKeys(string path, string name, string pathBefore, string parent, bool canPrint, string ruleName, string parentRule);
         void printCollection(Node *node, string ruleName);
         void printTuple(Node *node, string ruleName);
         void printAll();
