@@ -1,6 +1,6 @@
 ## About
 
-- JFUSE (Json FULL Schema Extractor) is a tool for schema extraction. Given a valid JSON file, it infers types, tagged unions, enumeration, arrays as tuples, and objects as collections.
+- JFUSE (Json FULL Schema Extractor) is a tool for schema extraction. Given a valid JSON file, it infers basic types, tagged unions, enumeration, arrays as tuples, and objects as collections.
 
 ### Running
 ```sh
