@@ -33,6 +33,7 @@ struct Node
     bool collectionWasModified;
     bool isCollection;
     bool isTuple;
+    bool key;
     ListEdge *edges;
 };
 
@@ -99,12 +100,11 @@ class Graph
         Lists lists;
 
         QueueStruct* getAtt(string name, string type, string parent, QueueStruct *q, string path);
-        void saveEnum(QueueStruct *q);
-        void saveEnum2(string name, string value);
+        void saveEnum(string name, string value);
         void saveEnumArray(string name, vector<string> enums);
         void getTaggedUnions(string name, string type, string parent, Queue q);
         void saveTaggedUnion(Queue q);
-        void insertNode(string name, string type, string path, Node* parent, Node *parentParent);
+        void insertNode(string name, string type, string path, Node* parent, Node *parentParent, bool canBeKey);
         void insertEdge(string origin, string destiny, string relationshipType, string value);
         void setArray(string name, int counter, unordered_map<string, int> set);
         void checkEnums();

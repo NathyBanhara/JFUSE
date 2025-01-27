@@ -65,7 +65,7 @@ void Graph::checkArrayEnum(QueueStruct *q, vector<string> enums, string name)
         this->lists.listNodes[name]->isEnum = false;
 }
 
-Node *createNode (string type, string name, string path)
+Node *createNode (string type, string name, string path, bool canBeKey)
 {
     Node *newOne = new Node;
     newOne->counter = 1;
@@ -75,6 +75,7 @@ Node *createNode (string type, string name, string path)
     newOne->edges = NULL;
     newOne->hasTaggedUnion = false;
     newOne->isSomeonesTaggedUnion = false;
+    newOne->key = canBeKey;
     if (path != "") newOne->paths[path] = 1;
     if (newOne->type != "array" && newOne->type != "object")
     {
@@ -96,30 +97,7 @@ Node *createNode (string type, string name, string path)
     return newOne;
 }
 
-void Graph::saveEnum(QueueStruct *q)
-{
-    if (q->name == "") return;
-    if (q->value == "") return;
-
-    string name = q->name + "." + q->type;
-
-    if (this->lists.listNodes[name]->isEnum)
-    {
-        if (!this->lists.listNodes[name]->enumerate[q->value])
-        {
-            if (this->lists.listNodes[name]->enumerate.size() + 1 > MAXENUM)
-            {
-                this->lists.listNodes[name]->isEnum = false;
-                this->lists.listNodes[name]->enumerate.clear();
-            }
-            else
-                this->lists.listNodes[name]->enumerate[q->value] = 1;
-        }
-        else this->lists.listNodes[name]->enumerate[q->value]++;
-    }
-}
-
-void Graph::saveEnum2(string name, string value)
+void Graph::saveEnum(string name, string value)
 {
     if (this->lists.listNodes[name]->isEnum)
     {
@@ -212,7 +190,7 @@ void Graph::checkTaggedUnions()
     }
 }
 
-void Graph::insertNode(string name, string type, string path, Node *parent, Node *parentParent)
+void Graph::insertNode(string name, string type, string path, Node *parent, Node *parentParent, bool canBeKey)
 {
     if (parent != NULL && parent->type == "object" && parentParent->type == "array")
     {
@@ -231,11 +209,17 @@ void Graph::insertNode(string name, string type, string path, Node *parent, Node
                 this->lists.listNodes[name + "." + type]->paths[path] = 1;
             else this->lists.listNodes[name + "." + type]->paths[path]++;
         }
+
+        if (!canBeKey)
+        {
+            this->lists.listNodes[name + "." + type]->key = false;
+        }
+
         return;
     }
     else
     {
-        Node *newOne = createNode(type, name, path);
+        Node *newOne = createNode(type, name, path, canBeKey);
         name = name + "." + type;
         this->lists.listNodes[name] = newOne;
         return;

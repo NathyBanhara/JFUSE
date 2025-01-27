@@ -21,6 +21,7 @@
 #define TUPLE "()"
 #define DOMINANTENUMTYPE 0.5
 #define MINFORANARRAYTOBEATUPLE 0.9
+#define MAXSTRINGKEYLENGHT 16
 
 #define STRING "S"
 #define NUMBER "R"
