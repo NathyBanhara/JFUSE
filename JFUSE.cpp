@@ -29,6 +29,7 @@ int main(int argc, char *argv[])
     printf("\n");
     
     sec.graph.checkEnums();
+    sec.graph.checkKeys(jsonFilename);
 
     sec.graph.getTaggedUnions(sec.queue.front()->name, sec.queue.front()->type, " ", sec.queue);
     sec.graph.checkTaggedUnions();

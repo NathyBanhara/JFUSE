@@ -2,6 +2,8 @@
 #include "graph.hpp"
 #include "queue.hpp"
 #include <bits/stdc++.h>
+#include <string>
+#include <regex>
 #include "definitions/define.hpp"
 
 using namespace std;
@@ -414,6 +416,39 @@ void Graph::checkEnums()
                     x.second->enumerate.erase(e);
                 }
             }
+        }
+    }
+}
+
+void Graph::checkKeys(string jsonFilename)
+{
+    for (auto x : this->lists.listNodes)
+    {
+        if (x.second->key) 
+        {
+            std::string key = x.second->name;
+            std::string command = "grep -o '\"" + key + "\": \"[^\"]*\"' " + jsonFilename + " | sed 's/\"" + key + "\": \"//g' | sed 's/\"//g'";
+            FILE *fp = popen(command.c_str(), "r");
+            if (fp == NULL) {
+                std::cerr << "Error executing grep command.\n";
+                return;
+            }
+
+            std::string result;
+            char buffer[1024];
+            std::unordered_set<std::string> values;
+            while (fgets(buffer, sizeof(buffer), fp) != NULL) {
+                std::string value(buffer);
+                value.erase(value.find_last_not_of("\n") + 1);
+                if (values.find(value) != values.end()) {
+                    x.second->key = false;
+                    std::cout << "Duplicate value found for key '" << key << "': " << value << std::endl;
+                } else {
+                    values.insert(value);
+                }
+            }
+
+            fclose(fp);
         }
     }
 }

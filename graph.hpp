@@ -7,6 +7,7 @@
 #include <unordered_set>
 #include <vector>
 #include <queue>
+#include <regex>
 #include "queue.hpp"
 
 using namespace std;
@@ -108,6 +109,7 @@ class Graph
         void insertEdge(string origin, string destiny, string relationshipType, string value);
         void setArray(string name, int counter, unordered_map<string, int> set);
         void checkEnums();
+        void checkKeys(string jsonFilename);
         void setCollectionStructure(queue<std::string> children, Node *node);
         void checkTupleAndCollection();
         void checkObject(Node *node);
