@@ -31,6 +31,19 @@ string writeType(string type)
     {
         return type;
     }
+    if (type == "date")
+    {
+        return DATE;
+    }
+    if (type == "time")
+    {
+        return TIME;
+    }
+    if (type == "timestamp")
+    {
+        return TIMESTAMP;
+    }
+    
     return type;
 }
 

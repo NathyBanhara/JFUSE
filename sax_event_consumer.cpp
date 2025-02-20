@@ -162,28 +162,63 @@ bool sax_event_consumer::number_float(number_float_t val, const string_t& s)
 
 bool sax_event_consumer::string(string_t& val)
 {
+    std::string type = "string";
+    if (isDate(val))
+    {
+        type = "date";
+    }
+    else if (isTime(val))
+    {
+        type = "time";
+    }
+    else if (isTimestamp(val))
+    {
+        type = "timestamp";
+    }
+
     std::string auxName = name;
-    bool isEnum = val.length() > MAXSTRINGLENGHT
+    bool isEnum = val.length() > MAXSTRINGLENGHT || type != "string"
         ? false
         : true;
-    bool canBeKey = checkIfStringCanBeAKey(val); 
-    handleKey("string", isEnum, canBeKey, 0);
+    bool canBeKey = type == "string" && checkIfStringCanBeAKey(val); 
+    handleKey(type, isEnum, canBeKey, 0);
     if (val.length() > MAXSTRINGLENGHT)
     {
-        queue.push(queue.createStruct(auxName, "string", ""));
+        queue.push(queue.createStruct(auxName, type, ""));
         if (this->graph.lists.listNodes[myStack.top()->name]->type == "array")
         {
             this->graph.lists.listNodes[myStack.top()->name]->isEnum = false;
         }
-        insertChildren("string");
+        insertChildren(type);
         return true;
     }
     if (this->graph.lists.listNodes[myStack.top()->name]->type == "array")
         handleArrayEnum(val);
     else graph.saveEnum(auxName + "." + "string", val);
-    queue.push(queue.createStruct(auxName, "string", val));
-    insertChildren("string");
+    queue.push(queue.createStruct(auxName, type, val));
+    insertChildren(type);
     return true;
+}
+
+bool sax_event_consumer::isDate(std::string date) {
+    std::regex datePattern(
+        R"((\d{2})[-/](\d{2})[-/](\d{4})|(\d{4})[-/](\d{2})[-/](\d{2})|(\d{2})/(\d{2})/(\d{4}))"
+    );
+    return std::regex_match(date, datePattern);
+}
+
+bool sax_event_consumer::isTime(std::string time) {
+    std::regex timePattern(
+        R"((\d{2}):(\d{2})|(\d{2}):(\d{2}):(\d{2})|(\d{2}):(\d{2})\s(AM|PM))"
+    );
+    return std::regex_match(time, timePattern);
+}
+
+bool sax_event_consumer::isTimestamp(std::string timestamp) {
+    std::regex timestampPattern(
+        R"(^\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}(\.\d{3})?$|^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z$)"
+    );
+    return std::regex_match(timestamp, timestampPattern);
 }
 
 bool sax_event_consumer::checkIfStringCanBeAKey(string_t& value)

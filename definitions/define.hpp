@@ -27,6 +27,9 @@
 #define STRING "S"
 #define NUMBER "R"
 #define BOOl "B"
+#define TIME "T"
+#define TIMESTAMP "TS"
+#define DATE "D"
 
 #define nullT = "null"
 #define booleanT = "boolean"
@@ -36,5 +39,8 @@
 #define objectT = "object"
 #define arrayT = "array"
 #define binaryT = "binary"
+#define timeT = "time"
+#define timestampT = "timestamp"
+#define dateT = "date"
 
 #endif
