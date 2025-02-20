@@ -67,7 +67,7 @@ void Graph::checkArrayEnum(QueueStruct *q, vector<string> enums, string name)
         this->lists.listNodes[name]->isEnum = false;
 }
 
-Node *createNode (string type, string name, string path, bool canBeKey)
+Node *createNode (string type, string name, string path, bool canBeKey, double value)
 {
     Node *newOne = new Node;
     newOne->counter = 1;
@@ -78,6 +78,8 @@ Node *createNode (string type, string name, string path, bool canBeKey)
     newOne->hasTaggedUnion = false;
     newOne->isSomeonesTaggedUnion = false;
     newOne->key = canBeKey;
+    newOne->min = value;
+    newOne->max = value;
     if (path != "") newOne->paths[path] = 1;
     if (newOne->type != "array" && newOne->type != "object")
     {
@@ -192,7 +194,14 @@ void Graph::checkTaggedUnions()
     }
 }
 
-void Graph::insertNode(string name, string type, string path, Node *parent, Node *parentParent, bool canBeKey)
+void Graph::insertNode(
+    string name, 
+    string type, 
+    string path, 
+    Node *parent, 
+    Node *parentParent, 
+    bool canBeKey, 
+    double value)
 {
     if (parent != NULL && parent->type == "object" && parentParent->type == "array")
     {
@@ -216,12 +225,23 @@ void Graph::insertNode(string name, string type, string path, Node *parent, Node
         {
             this->lists.listNodes[name + "." + type]->key = false;
         }
+       
+        if ((type == "integer" || type == "double") && this->lists.listNodes[name + "." + type]->min > value)
+        {
+            this->lists.listNodes[name + "." + type]->min = value;
+        } 
+        
+        if ((type == "integer" || type == "double") && this->lists.listNodes[name + "." + type]->max < value)
+        {
+            this->lists.listNodes[name + "." + type]->max = value;
+        }
 
         return;
     }
     else
     {
-        Node *newOne = createNode(type, name, path, canBeKey);
+        Node *newOne = createNode(type, name, path, canBeKey, value);
+
         name = name + "." + type;
         this->lists.listNodes[name] = newOne;
         return;
@@ -424,31 +444,47 @@ void Graph::checkKeys(string jsonFilename)
 {
     for (auto x : this->lists.listNodes)
     {
-        if (x.second->key) 
+        if (x.second->isEnum) 
+        {
+            x.second->key = false;
+        }
+        else if (x.second->key) 
         {
             std::string key = x.second->name;
-            std::string command = "grep -o '\"" + key + "\": \"[^\"]*\"' " + jsonFilename + " | sed 's/\"" + key + "\": \"//g' | sed 's/\"//g'";
-            FILE *fp = popen(command.c_str(), "r");
-            if (fp == NULL) {
-                std::cerr << "Error executing grep command.\n";
-                return;
+
+            std::string command =
+                "grep -oE '\"" + key + "\": *\"[^\"]*\"' " + jsonFilename +
+                " | sed 's/\"" + key + "\": *\"//g' | sed 's/\"//g'; " +
+                "grep -oE '\"" + key + "\": *[0-9]+' " + jsonFilename +
+                " | sed 's/\"" + key + "\": *//g'; " +
+                "grep -oE '\"" + key + "\": *[0-9]+\\.[0-9]+' " + jsonFilename +
+                " | sed 's/\"" + key + "\": *//g'";
+
+            FILE *file = popen(command.c_str(), "r");
+            if (file == nullptr) {
+                continue;
             }
 
-            std::string result;
-            char buffer[1024];
             std::unordered_set<std::string> values;
-            while (fgets(buffer, sizeof(buffer), fp) != NULL) {
-                std::string value(buffer);
-                value.erase(value.find_last_not_of("\n") + 1);
-                if (values.find(value) != values.end()) {
+            char buffer[1024];
+            while (fgets(buffer, sizeof(buffer), file) != nullptr) {
+                string value(buffer);
+                size_t pos = value.find_last_not_of("\n");
+                if (pos != std::string::npos) {
+                    value.erase(pos + 1);
+                }
+                
+                if (values.find(value) != values.end())
+                {
                     x.second->key = false;
-                    std::cout << "Duplicate value found for key '" << key << "': " << value << std::endl;
-                } else {
+                    break;
+                } 
+                else {
                     values.insert(value);
                 }
             }
 
-            fclose(fp);
+            fclose(file);
         }
     }
 }

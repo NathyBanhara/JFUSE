@@ -50,7 +50,7 @@ void sax_event_consumer::handleArrayEnum(std::string value)
     }
 }
 
-void sax_event_consumer::handleKey(std::string type, bool isEnum, bool canBeKey)
+void sax_event_consumer::handleKey(std::string type, bool isEnum, bool canBeKey, double value)
 {
     if (name == "") name = myStack.top()->name;
     if (myStack.top() != NULL && myStack.top()->parent != NULL)
@@ -60,9 +60,9 @@ void sax_event_consumer::handleKey(std::string type, bool isEnum, bool canBeKey)
             type,
             myStack.top()->path + "." + name,
             this->graph.lists.listNodes[myStack.top()->name],
-            this->graph.lists.listNodes[myStack.top()->parent->name], canBeKey);
+            this->graph.lists.listNodes[myStack.top()->parent->name], canBeKey, value);
     }
-    else graph.insertNode(name, type, myStack.top()->path + "." + name, NULL, NULL, canBeKey);
+    else graph.insertNode(name, type, myStack.top()->path + "." + name, NULL, NULL, canBeKey, value);
     name = name + "." + type;
     if ((type == "string" || type == "integer") && isEnum == false)
     {
@@ -75,7 +75,7 @@ void sax_event_consumer::handleKey(std::string type, bool isEnum, bool canBeKey)
 bool sax_event_consumer::null()
 {
     queue.push(queue.createStruct(name, "null", ""));
-    handleKey("null", false, false);
+    handleKey("null", false, false, 0);
     if (this->graph.lists.listNodes[myStack.top()->name]->type == "array")
     {
         this->graph.lists.listNodes[myStack.top()->name]->isEnum = false;
@@ -87,7 +87,7 @@ bool sax_event_consumer::null()
 bool sax_event_consumer::boolean(bool val)
 {
     queue.push(queue.createStruct(name, "boolean", ""));
-    handleKey("boolean", false, false);
+    handleKey("boolean", false, false, 0);
     if (this->graph.lists.listNodes[myStack.top()->name]->type == "array")
     {
         this->graph.lists.listNodes[myStack.top()->name]->isEnum = false;
@@ -103,7 +103,8 @@ bool sax_event_consumer::number_integer(number_integer_t val)
     bool isEnum = val > MAXINT
         ? false
         : true;
-    handleKey("integer", isEnum, true);
+    handleKey("integer", isEnum, true, val);
+    
     if (val > MAXINT)
     {
         queue.push(queue.createStruct(auxName, "integer", ""));
@@ -128,7 +129,7 @@ bool sax_event_consumer::number_unsigned(number_unsigned_t val)
     bool isEnum = val > MAXINT
         ? false
         : true;
-    handleKey("integer", isEnum, true);
+    handleKey("integer", isEnum, true, val);
     if (val > MAXINT)
     {
         queue.push(queue.createStruct(auxName, "integer", ""));
@@ -150,7 +151,7 @@ bool sax_event_consumer::number_unsigned(number_unsigned_t val)
 bool sax_event_consumer::number_float(number_float_t val, const string_t& s)
 {
     queue.push(queue.createStruct(name, "double", ""));
-    handleKey("double", false, false);
+    handleKey("double", false, false, val);
     if (this->graph.lists.listNodes[myStack.top()->name]->type == "array")
     {
         this->graph.lists.listNodes[myStack.top()->name]->isEnum = false;
@@ -166,7 +167,7 @@ bool sax_event_consumer::string(string_t& val)
         ? false
         : true;
     bool canBeKey = checkIfStringCanBeAKey(val); 
-    handleKey("string", isEnum, canBeKey);
+    handleKey("string", isEnum, canBeKey, 0);
     if (val.length() > MAXSTRINGLENGHT)
     {
         queue.push(queue.createStruct(auxName, "string", ""));
@@ -218,7 +219,7 @@ bool sax_event_consumer::start_object(std::size_t elements)
     if (myStack.empty())
     {
         queue.push(queue.createStruct("start_object", "object", ""));
-        graph.insertNode("start_object", "object", "start_object", NULL, NULL, false);
+        graph.insertNode("start_object", "object", "start_object", NULL, NULL, false, 0);
         Stack *newOne = new Stack();
         newOne->name = "start_object.object";
         newOne->path = "start_object";
@@ -240,9 +241,10 @@ bool sax_event_consumer::start_object(std::size_t elements)
                 "object",
                 path,
                 this->graph.lists.listNodes[myStack.top()->name],
-                this->graph.lists.listNodes[myStack.top()->parent->name], false);
+                this->graph.lists.listNodes[myStack.top()->parent->name], false, 0);
         }
-        else graph.insertNode(name, "object", myStack.top()->path + "." + name, NULL, NULL, false);
+        else graph.insertNode(name, "object", myStack.top()->path + "." + name, NULL, NULL, false, 0);
+
         name = name + "." + "object";
         graph.insertEdge(myStack.top()->name, name, "parent", ""); 
         Stack *newOne = new Stack();
@@ -287,9 +289,9 @@ bool sax_event_consumer::start_array(std::size_t elements)
             "array",
             path,
             this->graph.lists.listNodes[myStack.top()->name],
-            this->graph.lists.listNodes[myStack.top()->parent->name], false);
+            this->graph.lists.listNodes[myStack.top()->parent->name], false, 0);
     }
-    else graph.insertNode(name, "array", myStack.top()->path + "." + nameBefore, NULL, NULL, false);
+    else graph.insertNode(name, "array", myStack.top()->path + "." + nameBefore, NULL, NULL, false, 0);
     name = name + "." + "array";
     graph.insertEdge(myStack.top()->name, name, "parent", ""); 
     Stack *newOne = new Stack();
@@ -323,7 +325,7 @@ bool sax_event_consumer::key(string_t& val)
 bool sax_event_consumer::binary(json::binary_t& val)
 {
     queue.push(queue.createStruct(name, "binary", ""));
-    handleKey("binary", false, false);
+    handleKey("binary", false, false, 0);
     if (this->graph.lists.listNodes[myStack.top()->name]->type == "array")
     {
         this->graph.lists.listNodes[myStack.top()->name]->isEnum = false;

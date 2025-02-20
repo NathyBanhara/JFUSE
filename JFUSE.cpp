@@ -17,6 +17,7 @@ int main(int argc, char *argv[])
 
     string jsonFilename = argv[2];
     string fileGenerated = argv[3];
+    string getMinAndMax = argv[4];
     
     std::ifstream text(jsonFilename);
 
@@ -43,7 +44,8 @@ int main(int argc, char *argv[])
 
     Grammar grammar = Grammar(sec.graph, fileGenerated);
 
-    grammar.writeStructure("start_object.object", "", false, "", false);
+    bool printMinAndMax = getMinAndMax == "true";
+    grammar.writeStructure("start_object.object", "", false, "", false, printMinAndMax);
     grammar.printAll();
 
     return 0;

@@ -46,7 +46,7 @@ class sax_event_consumer : public json::json_sax_t
         bool parse_error(std::size_t position, const std::string& last_token, const json::exception& ex) override;
 
     private:
-        void handleKey(std::string type, bool isEnum, bool canBeKey);
+        void handleKey(std::string type, bool isEnum, bool canBeKey, double value);
         void handleArrayEnum(std::string value);
         void insertChildren(std::string type);
         std::string setPath(std::string name);
