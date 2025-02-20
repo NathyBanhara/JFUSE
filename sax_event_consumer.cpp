@@ -192,15 +192,20 @@ bool sax_event_consumer::string(string_t& val)
         insertChildren(type);
         return true;
     }
-    if (this->graph.lists.listNodes[myStack.top()->name]->type == "array")
-        handleArrayEnum(val);
-    else graph.saveEnum(auxName + "." + "string", val);
+    if (type == "string")
+    {
+        if (this->graph.lists.listNodes[myStack.top()->name]->type == "array")
+            handleArrayEnum(val);
+        else graph.saveEnum(auxName + "." + "string", val);
+    }
+    
     queue.push(queue.createStruct(auxName, type, val));
     insertChildren(type);
+    
     return true;
 }
 
-bool sax_event_consumer::isDate(std::string date) {
+bool sax_event_consumer::isDate(std::string date) { // deu segmentation fault
     std::regex datePattern(
         R"((\d{2})[-/](\d{2})[-/](\d{4})|(\d{4})[-/](\d{2})[-/](\d{2})|(\d{2})/(\d{2})/(\d{4}))"
     );
