@@ -1,5 +1,5 @@
 nDoc= int(input("Doc quantity: "))
-fname=("twitter.json")
+fname=("extractTwitter.json")
 #fname=("roam_prescription_based_prediction.jsonl")
 #fname=("yelp_academic_dataset_business.json")
 #fname=("yelp_academic_dataset_user.json")
