@@ -205,7 +205,7 @@ bool sax_event_consumer::string(string_t& val)
     return true;
 }
 
-bool sax_event_consumer::isDate(std::string date) { // deu segmentation fault
+bool sax_event_consumer::isDate(std::string date) { 
     std::regex datePattern(
         R"((\d{2})[-/](\d{2})[-/](\d{4})|(\d{4})[-/](\d{2})[-/](\d{2})|(\d{2})/(\d{2})/(\d{4}))"
     );
