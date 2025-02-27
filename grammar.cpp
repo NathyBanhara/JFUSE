@@ -221,6 +221,14 @@ void Grammar::writeStructure(
 
     string ruleName = "";
 
+    if (name == "items.array.object") {
+        cout << !this->graph.lists.listPaths[path] << "\n";
+        //cout << this->graph.lists.listNodes[name]->isSomeonesTaggedUnion && !canPrint;
+        //cout << "\n";
+        //cout << this->graph.lists.listPaths[path]->nodes.size();
+        //cout << "\n";
+    }
+    
     if (!this->graph.lists.listPaths[path] || (this->graph.lists.listNodes[name]->isSomeonesTaggedUnion && !canPrint)
         || this->graph.lists.listPaths[path]->nodes.size() == 0) return;
 

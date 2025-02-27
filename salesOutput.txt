@@ -1,0 +1,8 @@
+$date.object::=  $numberLong: key
+_id.object::=  $oid: S
+age.object::=  $numberInt: key
+customer.object::=  satisfaction: satisfaction.object email: key age: age.object gender: [F, M]
+items.array::= [items.array.object]
+root::=  purchaseMethod: [Phone, In store, Online] couponUsed: B customer: customer.object storeLocation: [New York, San Diego, Austin, London, Seattle, Denver] items: items.array saleDate: saleDate.object _id: _id.object
+saleDate.object::=  $date: $date.object
+satisfaction.object::=  $numberInt: key
