@@ -39,8 +39,6 @@ int main(int argc, char *argv[])
 
     sec.graph.checkTupleAndCollection();
 
-    sec.graph.printGraph();
-
     sec.queue.freeQueue();
     cout << "\n\n";
 

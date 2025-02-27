@@ -1,23 +1,13 @@
 _id.object::=  $oid: S
-channels.object::= {(S:array)+}
-
-display_text_range.array::= [integer, integer]
-entities.object::=  media: media.array symbols: symbols.array user_mentions: user_mentions.array urls: urls.array hashtags: hashtags.array
-extended_entities.object::=  media: media.array
-extended_tweet.object::=  extended_entities: extended_entities.object entities: entities.object display_text_range: display_text_range.array full_text: S
-hashtags.array::= [hashtags.array.object]
-hashtags.array.object::=  indices: indices.array text: S
+channels.object::=  navalny: navalny.array
+entities.object::=  symbols: symbols.array user_mentions: user_mentions.array urls: urls.array hashtags: hashtags.array
+hashtags.array::= []
 indices.array::= [integer, integer]
 keywords.array::= [string]
-media.array::= [media.array.object]
-media.array.object::= {(S:array, S:R, S:R, S:object, S:S)+}
-
-quoted_status.object::=  possibly_sensitive: B extended_entities: extended_entities.object display_text_range: display_text_range.array lang: [de, sr, bg, en, uk, en-gb, ru] filter_level: low retweeted: B favorited: B entities: entities.object favorite_count: R retweet_count: R reply_count: R quote_count: R is_quote_status: B contributors: null place: null coordinates: null geo: null user: user.object in_reply_to_screen_name: null in_reply_to_user_id_str: null in_reply_to_user_id: null in_reply_to_status_id_str: null in_reply_to_status_id: null truncated: B source: S text: S id_str: S id: R created_at: S
-retweeted_status.object::=  in_reply_to_screen_name: key | null in_reply_to_user_id_str: S | null in_reply_to_user_id: R | null in_reply_to_status_id_str: S | null in_reply_to_status_id: R | null extended_tweet: extended_tweet.object lang: [de, sr, bg, en, uk, en-gb, ru] filter_level: low possibly_sensitive: B retweeted: B favorited: B extended_entities: extended_entities.object entities: entities.object favorite_count: R retweet_count: R reply_count: R quote_count: R is_quote_status: B contributors: null place: null coordinates: null geo: null user: user.object truncated: B source: S display_text_range: display_text_range.array text: S id_str: S id: R created_at: S
-root::=  in_reply_to_user_id: R extended_entities: extended_entities.object in_reply_to_screen_name: key | null in_reply_to_user_id_str: S | nullR in_reply_to_status_id_str: S | null in_reply_to_status_id: R | null quoted_status: quoted_status.object quoted_status_id_str: S quoted_status_id: R extended_tweet: extended_tweet.object display_text_range: display_text_range.array possibly_sensitive: B retweeted_status: retweeted_status.object keywords: keywords.array channels: channels.object timestamp_ms: key lang: [de, sr, bg, en, uk, en-gb, ru] filter_level: low retweeted: B favorited: B entities: entities.object favorite_count: R retweet_count: R reply_count: R quote_count: R is_quote_status: B contributors: null place: null coordinates: null geo: null user: user.objectnull truncated: B source: S text: S id_str: S id: R created_at: S _id: _id.object
+navalny.array::= [string]
+root::=  keywords: keywords.array channels: channels.object timestamp_ms: key lang: S filter_level: S retweeted: B favorited: B entities: entities.object favorite_count: R retweet_count: R reply_count: R quote_count: R is_quote_status: B contributors: null place: null coordinates: null geo: null user: user.object in_reply_to_screen_name: null in_reply_to_user_id_str: null in_reply_to_user_id: null in_reply_to_status_id_str: null in_reply_to_status_id: null truncated: B source: S text: S id_str: S id: R created_at: S _id: _id.object
 symbols.array::= []
-urls.array::= [urls.array.object]
-urls.array.object::=  indices: indices.array display_url: S expanded_url: S url: S
-user.object::=  profile_banner_url: S url: S | null time_zone: null | S utc_offset: null | R description: null | S location: null | S id: R notifications: null follow_request_sent: null following: null default_profile_image: B default_profile: B profile_image_url_https: S profile_image_url: S profile_use_background_image: B profile_text_color: S profile_sidebar_fill_color: S profile_sidebar_border_color: S profile_link_color: S profile_background_tile: B profile_background_image_url_https: S profile_background_image_url: S profile_background_color: S is_translator: B contributors_enabled: B lang: [de, sr, bg, en, uk, en-gb, ru] geo_enabled: B created_at: S statuses_count: R favourites_count: R listed_count: R friends_count: R followers_count: R verified: B protected: B translator_type: [regular, none] screen_name: S name: S id_str: S id: R
+urls.array::= []
+user.object::=  notifications: null follow_request_sent: null following: null default_profile_image: B default_profile: B profile_image_url_https: S profile_image_url: S profile_use_background_image: B profile_text_color: S profile_sidebar_fill_color: S profile_sidebar_border_color: S profile_link_color: S profile_background_tile: B profile_background_image_url_https: S profile_background_image_url: S profile_background_color: S is_translator: B contributors_enabled: B lang: S geo_enabled: B time_zone: S utc_offset: R created_at: S statuses_count: R favourites_count: R listed_count: R friends_count: R followers_count: R verified: B protected: B translator_type: S description: S url: null location: S screen_name: S name: S id_str: S id: R
 user_mentions.array::= [user_mentions.array.object]
 user_mentions.array.object::=  id: R indices: indices.array id_str: S id: R name: S screen_name: S

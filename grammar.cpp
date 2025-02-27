@@ -220,14 +220,6 @@ void Grammar::writeStructure(
     }
 
     string ruleName = "";
-
-    if (name == "items.array.object") {
-        cout << !this->graph.lists.listPaths[path] << "\n";
-        //cout << this->graph.lists.listNodes[name]->isSomeonesTaggedUnion && !canPrint;
-        //cout << "\n";
-        //cout << this->graph.lists.listPaths[path]->nodes.size();
-        //cout << "\n";
-    }
     
     if (!this->graph.lists.listPaths[path] || (this->graph.lists.listNodes[name]->isSomeonesTaggedUnion && !canPrint)
         || this->graph.lists.listPaths[path]->nodes.size() == 0) return;
@@ -414,7 +406,14 @@ void Grammar::writeStructure(
                             string nameEdge = "";
                             if (aux->edge->destiny->name == "") nameEdge = name; 
                             else nameEdge = aux->edge->destiny->name;
-                            string edgePath = path + "." + aux->edge->destiny->name;
+
+                            string edgePath = "";
+                            if (parent == "start_object.object") {
+                                edgePath = path + "." + "array." + aux->edge->destiny->name;
+                            } else {
+                                edgePath = path + "." + aux->edge->destiny->name;
+                            }
+                            
                             if (i == 0)
                             {
                                 if (aux->edge->destiny->type == "object")

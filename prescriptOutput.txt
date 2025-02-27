@@ -1,0 +1,4 @@
+cms_prescription_counts.object::= {(S:R)+}
+
+provider_variables.object::=  brand_name_rx_count: R region: [Northeast, West, Midwest, South] gender: [F, M] years_practicing: [2, 8, 3, 1, 5, 4, 6, 7] specialty: S generic_rx_count: R settlement_type: [urban, non-urban]
+root::=  npi: key provider_variables: provider_variables.object cms_prescription_counts: cms_prescription_counts.object

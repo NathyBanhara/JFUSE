@@ -339,7 +339,7 @@ void Graph::insertEdge(string origin, string destiny, string relationshipType, s
 
 void Graph::printGraph()
 {
-    /*for (auto x : this->lists.listNodes)
+    for (auto x : this->lists.listNodes)
     {
         cout << x.second->name << ": ";
         for (ListEdge *aux = x.second->edges; aux != NULL; aux = aux->next)
@@ -348,11 +348,6 @@ void Graph::printGraph()
             cout << ", ";
         }
         cout << "\n";
-    }*/
-
-    for (auto x : this->lists.listPaths)
-    {
-        cout << x.first << "\n";
     }
 }
 
