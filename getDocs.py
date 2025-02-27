@@ -1,10 +1,10 @@
 nDoc= int(input("Doc quantity: "))
-fname=("novo.json")
+fname=("extractTwitter.json")
 #fname=("roam_prescription_based_prediction.jsonl")
 #fname=("yelp_academic_dataset_business.json")
 #fname=("yelp_academic_dataset_user.json")
 #fout=open('extractPrescrip.json', 'w')
-fout=open('extractTwitter.json','w')
+fout=open('novo.json','w')
 fout.write('{'+'\n')
 with open(fname) as f:
 	lines=f.readlines()
