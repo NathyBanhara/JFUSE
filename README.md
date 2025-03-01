@@ -7,7 +7,7 @@
 $ g++ -o main *.cpp
 ```
 ```sh
-$ ./main 2 <json collection> <schema name>
+$ ./main 2 <json collection> <schema name> <show min and max: true or false>
 ```
 
 ### Example
