@@ -7,6 +7,7 @@
 #include <unordered_set>
 #include <vector>
 #include <queue>
+#include <regex>
 #include "queue.hpp"
 
 using namespace std;
@@ -24,7 +25,7 @@ struct Node
     string type;
     unordered_map<string, int> enumerate;
     unordered_map<string, int> paths;
-    unordered_map<int, Collection*> arrayInfo;
+    unordered_map<int, Collection *> arrayInfo;
     vector<string> taggedUnions;
     Collection *tuple;
     bool hasTaggedUnion;
@@ -33,6 +34,9 @@ struct Node
     bool collectionWasModified;
     bool isCollection;
     bool isTuple;
+    bool key;
+    double min;
+    double max;
     ListEdge *edges;
 };
 
@@ -58,15 +62,19 @@ struct ListEdgesKey
     string edge;
     string node;
 
-    bool operator==(const ListEdgesKey& other) const {
+    bool operator==(const ListEdgesKey &other) const
+    {
         return std::tie(edge, node) == std::tie(other.edge, other.node);
     }
 };
 
-namespace std {
+namespace std
+{
     template <>
-    struct hash<ListEdgesKey> {
-        std::size_t operator()(const ListEdgesKey& key) const {
+    struct hash<ListEdgesKey>
+    {
+        std::size_t operator()(const ListEdgesKey &key) const
+        {
             return std::hash<string>()(key.edge) ^ std::hash<string>()(key.node);
         }
     };
@@ -80,9 +88,9 @@ struct Path
 
 struct Lists
 {
-    unordered_map<string, Node*> listNodes;
-    unordered_map<ListEdgesKey, Edge*> listEdges;
-    unordered_map<string, Path*> listPaths;
+    unordered_map<string, Node *> listNodes;
+    unordered_map<ListEdgesKey, Edge *> listEdges;
+    unordered_map<string, Path *> listPaths;
 };
 
 struct Collection
@@ -90,39 +98,39 @@ struct Collection
     int size;
     int counter;
     bool valid;
-    unordered_map<string, int> structure; //type // counter
+    unordered_map<string, int> structure; // type // counter
 };
 
 class Graph
 {
-    public:
-        Lists lists;
+public:
+    Lists lists;
 
-        QueueStruct* getAtt(string name, string type, string parent, QueueStruct *q, string path);
-        void saveEnum(QueueStruct *q);
-        void saveEnum2(string name, string value);
-        void saveEnumArray(string name, vector<string> enums);
-        void getTaggedUnions(string name, string type, string parent, Queue q);
-        void saveTaggedUnion(Queue q);
-        void insertNode(string name, string type, string path, Node* parent, Node *parentParent);
-        void insertEdge(string origin, string destiny, string relationshipType, string value);
-        void setArray(string name, int counter, unordered_map<string, int> set);
-        void checkEnums();
-        void setCollectionStructure(queue<std::string> children, Node *node);
-        void checkTupleAndCollection();
-        void checkObject(Node *node);
-        void checkArray(Node *node);
-        void insertStructure(queue<std::string> children, Node *node);
-        void checkIfItsEqual(queue<std::string> children, Node *node);
-        void checkArrayEnum(QueueStruct *q, vector<string> enums, string name);
-        void setPath(string path, string name);
-        void checkTaggedUnions();
-        void checkArrayType();
-        void percentualEdge();
-        void printGraph();
-        void printTaggedUnions();
-        void printTypes();
-        void printArrays();
+    QueueStruct *getAtt(string name, string type, string parent, QueueStruct *q, string path);
+    void saveEnum(string name, string value);
+    void saveEnumArray(string name, vector<string> enums);
+    void getTaggedUnions(string name, string type, string parent, Queue q);
+    void saveTaggedUnion(Queue q);
+    void insertNode(string name, string type, string path, Node *parent, Node *parentParent, bool canBeKey, double value);
+    void insertEdge(string origin, string destiny, string relationshipType, string value);
+    void setArray(string name, int counter, unordered_map<string, int> set);
+    void checkEnums();
+    void checkKeys(string jsonFilename);
+    void setCollectionStructure(queue<std::string> children, Node *node);
+    void checkTupleAndCollection();
+    void checkObject(Node *node);
+    void checkArray(Node *node);
+    void insertStructure(queue<std::string> children, Node *node);
+    void checkIfItsEqual(queue<std::string> children, Node *node);
+    void checkArrayEnum(QueueStruct *q, vector<string> enums, string name);
+    void setPath(string path, string name);
+    void checkTaggedUnions();
+    void checkArrayType();
+    void percentualEdge();
+    void printGraph();
+    void printTaggedUnions();
+    void printTypes();
+    void printArrays();
 };
 
 #endif

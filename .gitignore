@@ -9,3 +9,17 @@ main
 jsonGenerator.cpp
 structure.txt
 example.json
+aibnb.json
+airbnbOutput.txt
+dataOutput.txt
+example_output.json
+extractAirbnb.json
+extractSales.json
+listingsAndReviews.json
+prescriptOutput.txt
+sales.json
+salesData.txt
+salesOutput.txt
+salesSimplified.json
+twitter_simplified.json
+twitterOutput.txt

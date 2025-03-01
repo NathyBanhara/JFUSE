@@ -16,10 +16,18 @@ def get_random_age():
     return random.randint(11, 114)
 
 def get_random_day():
-    return random.randint(1, 31)
+    day = random.randint(1, 31)
+    if (day < 10):
+        return "0" + str(day)
+    
+    return str(day)
 
 def get_random_month():
-    return random.randint(1, 12)
+    month = random.randint(1, 12)
+    if (month < 10):
+        return "0" + str(month)
+
+    return str(month)
 
 def get_random_duration():
     return str(random.randint(1, 3)) + 'h' + str(random.randint(1, 59)) + 'min'
@@ -30,30 +38,50 @@ def get_random_price():
 def get_random_pages():
     return random.randint(200, 850)
 
+def get_random_id(ids):
+    id = random.randint(1, 2000000000)
+    if (id in ids):
+        get_random_id(ids)
+    else:
+        return id
+
+def get_random_number():
+    return random.randint(1, 7)
+
+def show_key():
+    number = random.randint(1, 10)
+    return number % 3 == 1 
+
+
 def main():
     objects = int(input("Objects: "))
     chunk_size = int(input("Chunk size: "))
+    ids = []
 
     with open("data.json", "w") as file:
         file.write('{\n')
 
         for i in range(objects):
+            id1 = get_random_id(ids)
+            ids.append(id1)
+            id2 = get_random_id(ids)
+            ids.append(id2)
             file.write(f'    "hogwarts_will_always_be_there": ')
             file.write('{\n')
             file.write('        "media": [\n')
             file.write('            {\n')
+            file.write(f'                "_id": {id1},\n')
             file.write('                "type": "cinematography",\n')
             file.write('                "movie": {\n')
             file.write(f'                    "title": "{generate_random_string(21)}",\n')
             file.write(f'                    "director": "{generate_random_string(21)}",\n')
             file.write(f'                    "year": {get_random_movie_year()},\n')
-            file.write('                    "premiere_date": [\n')
-            file.write(f'                        {get_random_month()},\n')
-            file.write(f'                        {get_random_day()},\n')
-            file.write(f'                        {get_random_movie_year()}\n')
-            file.write('                    ],\n')
+            file.write(f'                    "premiere_date": "{get_random_month()}/{get_random_day()}/{get_random_movie_year()}", \n')
+            if (show_key() == True):
+                file.write(f'                    "evaluation": [{{"stars": {get_random_number()}}}],\n')
             file.write(f'                    "duration": "{get_random_duration()}",\n')
-            file.write(f'                    "price": {get_random_price()},\n')
+            if (show_key() == True):
+                file.write(f'                    "price": {get_random_price()},\n')
             file.write('                    "genres": ')
             if (i + 1) % 2 == 0:
                 file.write('["adventure", "mystery"]\n')
@@ -62,18 +90,17 @@ def main():
             file.write('                }\n')
             file.write('            },\n')
             file.write('            {\n')
+            file.write(f'                "_id": {id2},\n')
             file.write('                "type": "text",\n')
             file.write('                "book": {\n')
             file.write(f'                    "title": "{generate_random_string(21)}",\n')
             file.write(f'                    "author": "{generate_random_string(21)}",\n')
             file.write(f'                    "year": {get_random_book_year()},\n')
-            file.write('                    "premiere_date": [\n')
-            file.write(f'                        {get_random_month()},\n')
-            file.write(f'                        {get_random_day()},\n')
-            file.write(f'                        {get_random_book_year()}\n')
-            file.write('                    ],\n')
+            if (show_key() == True):
+                file.write(f'                    "premiere_date": "{get_random_month()}/{get_random_day()}/{get_random_book_year()}",\n')
             file.write(f'                    "pages": {get_random_pages()},\n')
-            file.write(f'                    "price": {get_random_price()},\n')
+            if (show_key() == True):
+                file.write(f'                    "price": {get_random_price()},\n')
             file.write('                    "genres": ')
             if (i + 1) % 2 == 0:
                 file.write('["adventure", "mystery"]\n')

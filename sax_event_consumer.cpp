@@ -1,5 +1,6 @@
 #include "json.hpp"
 #include "queue.hpp"
+#include <regex>
 #include "sax_event_consumer.hpp"
 #include "definitions/define.hpp"
 
@@ -49,7 +50,7 @@ void sax_event_consumer::handleArrayEnum(std::string value)
     }
 }
 
-void sax_event_consumer::handleKey(std::string type, bool isEnum)
+void sax_event_consumer::handleKey(std::string type, bool isEnum, bool canBeKey, double value)
 {
     if (name == "") name = myStack.top()->name;
     if (myStack.top() != NULL && myStack.top()->parent != NULL)
@@ -59,9 +60,9 @@ void sax_event_consumer::handleKey(std::string type, bool isEnum)
             type,
             myStack.top()->path + "." + name,
             this->graph.lists.listNodes[myStack.top()->name],
-            this->graph.lists.listNodes[myStack.top()->parent->name]);
+            this->graph.lists.listNodes[myStack.top()->parent->name], canBeKey, value);
     }
-    else graph.insertNode(name, type, myStack.top()->path + "." + name, NULL, NULL);
+    else graph.insertNode(name, type, myStack.top()->path + "." + name, NULL, NULL, canBeKey, value);
     name = name + "." + type;
     if ((type == "string" || type == "integer") && isEnum == false)
     {
@@ -74,7 +75,7 @@ void sax_event_consumer::handleKey(std::string type, bool isEnum)
 bool sax_event_consumer::null()
 {
     queue.push(queue.createStruct(name, "null", ""));
-    handleKey("null", false);
+    handleKey("null", false, false, 0);
     if (this->graph.lists.listNodes[myStack.top()->name]->type == "array")
     {
         this->graph.lists.listNodes[myStack.top()->name]->isEnum = false;
@@ -86,7 +87,7 @@ bool sax_event_consumer::null()
 bool sax_event_consumer::boolean(bool val)
 {
     queue.push(queue.createStruct(name, "boolean", ""));
-    handleKey("boolean", false);
+    handleKey("boolean", false, false, 0);
     if (this->graph.lists.listNodes[myStack.top()->name]->type == "array")
     {
         this->graph.lists.listNodes[myStack.top()->name]->isEnum = false;
@@ -102,7 +103,8 @@ bool sax_event_consumer::number_integer(number_integer_t val)
     bool isEnum = val > MAXINT
         ? false
         : true;
-    handleKey("integer", isEnum);
+    handleKey("integer", isEnum, true, val);
+    
     if (val > MAXINT)
     {
         queue.push(queue.createStruct(auxName, "integer", ""));
@@ -115,7 +117,7 @@ bool sax_event_consumer::number_integer(number_integer_t val)
     }
     if (this->graph.lists.listNodes[myStack.top()->name]->type == "array")
         handleArrayEnum(to_string(val));
-    else graph.saveEnum2(auxName + "." + "integer", to_string(val));
+    else graph.saveEnum(auxName + "." + "integer", to_string(val));
     queue.push(queue.createStruct(auxName, "integer", to_string(val)));
     insertChildren("integer");
     return true;
@@ -127,7 +129,7 @@ bool sax_event_consumer::number_unsigned(number_unsigned_t val)
     bool isEnum = val > MAXINT
         ? false
         : true;
-    handleKey("integer", isEnum);
+    handleKey("integer", isEnum, true, val);
     if (val > MAXINT)
     {
         queue.push(queue.createStruct(auxName, "integer", ""));
@@ -140,7 +142,7 @@ bool sax_event_consumer::number_unsigned(number_unsigned_t val)
     }
     if (this->graph.lists.listNodes[myStack.top()->name]->type == "array")
         handleArrayEnum(to_string(val));
-    else graph.saveEnum2(auxName + "." + "integer", to_string(val));
+    else graph.saveEnum(auxName + "." + "integer", to_string(val));
     queue.push(queue.createStruct(auxName, "integer", to_string(val)));
     insertChildren("integer");
     return true;
@@ -149,7 +151,7 @@ bool sax_event_consumer::number_unsigned(number_unsigned_t val)
 bool sax_event_consumer::number_float(number_float_t val, const string_t& s)
 {
     queue.push(queue.createStruct(name, "double", ""));
-    handleKey("double", false);
+    handleKey("double", false, false, val);
     if (this->graph.lists.listNodes[myStack.top()->name]->type == "array")
     {
         this->graph.lists.listNodes[myStack.top()->name]->isEnum = false;
@@ -160,27 +162,107 @@ bool sax_event_consumer::number_float(number_float_t val, const string_t& s)
 
 bool sax_event_consumer::string(string_t& val)
 {
+    std::string type = "string";
+    if (isDate(val))
+    {
+        type = "date";
+    }
+    else if (isTime(val))
+    {
+        type = "time";
+    }
+    else if (isTimestamp(val))
+    {
+        type = "timestamp";
+    }
+
     std::string auxName = name;
-    bool isEnum = val.length() > MAXSTRINGLENGHT
+    bool isEnum = val.length() > MAXSTRINGLENGHT || type != "string"
         ? false
         : true;
-    handleKey("string", isEnum);
+    bool canBeKey = type == "string" && checkIfStringCanBeAKey(val); 
+
+    handleKey(type, isEnum, canBeKey, 0);
     if (val.length() > MAXSTRINGLENGHT)
     {
-        queue.push(queue.createStruct(auxName, "string", ""));
+        queue.push(queue.createStruct(auxName, type, ""));
         if (this->graph.lists.listNodes[myStack.top()->name]->type == "array")
         {
             this->graph.lists.listNodes[myStack.top()->name]->isEnum = false;
         }
-        insertChildren("string");
+        insertChildren(type);
         return true;
     }
-    if (this->graph.lists.listNodes[myStack.top()->name]->type == "array")
-        handleArrayEnum(val);
-    else graph.saveEnum2(auxName + "." + "string", val);
-    queue.push(queue.createStruct(auxName, "string", val));
-    insertChildren("string");
+    if (type == "string")
+    {
+        if (this->graph.lists.listNodes[myStack.top()->name]->type == "array")
+            handleArrayEnum(val);
+        else graph.saveEnum(auxName + "." + "string", val);
+    }
+    
+    queue.push(queue.createStruct(auxName, type, val));
+    insertChildren(type);
+    
     return true;
+}
+
+bool sax_event_consumer::isDate(std::string date) { 
+    std::regex datePattern(
+        R"((\d{2})[-/](\d{2})[-/](\d{4})|(\d{4})[-/](\d{2})[-/](\d{2})|(\d{2})/(\d{2})/(\d{4}))"
+    );
+    return std::regex_match(date, datePattern);
+}
+
+bool sax_event_consumer::isTime(std::string time) {
+    std::regex timePattern(
+        R"((\d{2}):(\d{2})|(\d{2}):(\d{2}):(\d{2})|(\d{2}):(\d{2})\s(AM|PM))"
+    );
+    return std::regex_match(time, timePattern);
+}
+
+bool sax_event_consumer::isTimestamp(std::string timestamp) {
+    std::regex timestampPattern(
+        R"(^\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}(\.\d{3})?$|^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z$)"
+    );
+    return std::regex_match(timestamp, timestampPattern);
+}
+
+bool sax_event_consumer::checkIfStringCanBeAKey(string_t& value)
+{
+    if (isEmail(value))
+    {
+        return true;
+    }
+
+    if (isUUID(value))
+    {
+        return true;
+    }
+
+    if (isHexadecimal(value))
+    {
+        return true;
+    }
+
+    return value.length() <= MAXSTRINGKEYLENGHT;
+}
+
+
+bool sax_event_consumer::isEmail(string_t& value)
+{
+    regex email_regex(R"(^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$)");
+    return regex_match(value, email_regex);
+}
+
+bool sax_event_consumer::isUUID(string_t& value)
+{
+    regex uuid_regex(R"(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)");
+    return regex_match(value, uuid_regex);
+}
+
+bool sax_event_consumer::isHexadecimal(const std::string& value) { 
+    static const std::regex hexRegex(R"(^0[xX][0-9a-fA-F]+$|^[0-9a-fA-F]+$)");
+    return std::regex_match(value, hexRegex);
 }
 
 bool sax_event_consumer::start_object(std::size_t elements)
@@ -188,7 +270,7 @@ bool sax_event_consumer::start_object(std::size_t elements)
     if (myStack.empty())
     {
         queue.push(queue.createStruct("start_object", "object", ""));
-        graph.insertNode("start_object", "object", "start_object", NULL, NULL);
+        graph.insertNode("start_object", "object", "start_object", NULL, NULL, false, 0);
         Stack *newOne = new Stack();
         newOne->name = "start_object.object";
         newOne->path = "start_object";
@@ -210,9 +292,10 @@ bool sax_event_consumer::start_object(std::size_t elements)
                 "object",
                 path,
                 this->graph.lists.listNodes[myStack.top()->name],
-                this->graph.lists.listNodes[myStack.top()->parent->name]);
+                this->graph.lists.listNodes[myStack.top()->parent->name], false, 0);
         }
-        else graph.insertNode(name, "object", myStack.top()->path + "." + name, NULL, NULL);
+        else graph.insertNode(name, "object", myStack.top()->path + "." + name, NULL, NULL, false, 0);
+
         name = name + "." + "object";
         graph.insertEdge(myStack.top()->name, name, "parent", ""); 
         Stack *newOne = new Stack();
@@ -257,9 +340,9 @@ bool sax_event_consumer::start_array(std::size_t elements)
             "array",
             path,
             this->graph.lists.listNodes[myStack.top()->name],
-            this->graph.lists.listNodes[myStack.top()->parent->name]);
+            this->graph.lists.listNodes[myStack.top()->parent->name], false, 0);
     }
-    else graph.insertNode(name, "array", myStack.top()->path + "." + nameBefore, NULL, NULL);
+    else graph.insertNode(name, "array", myStack.top()->path + "." + nameBefore, NULL, NULL, false, 0);
     name = name + "." + "array";
     graph.insertEdge(myStack.top()->name, name, "parent", ""); 
     Stack *newOne = new Stack();
@@ -293,7 +376,7 @@ bool sax_event_consumer::key(string_t& val)
 bool sax_event_consumer::binary(json::binary_t& val)
 {
     queue.push(queue.createStruct(name, "binary", ""));
-    handleKey("binary", false);
+    handleKey("binary", false, false, 0);
     if (this->graph.lists.listNodes[myStack.top()->name]->type == "array")
     {
         this->graph.lists.listNodes[myStack.top()->name]->isEnum = false;

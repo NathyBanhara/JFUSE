@@ -31,10 +31,23 @@ string writeType(string type)
     {
         return type;
     }
+    if (type == "date")
+    {
+        return DATE;
+    }
+    if (type == "time")
+    {
+        return TIME;
+    }
+    if (type == "timestamp")
+    {
+        return TIMESTAMP;
+    }
+    
     return type;
 }
 
-void Grammar::writeTaggedUnions(string origin, string parent, string path, string ruleName)
+void Grammar::writeTaggedUnions(string origin, string parent, string path, string ruleName, bool getMinAndMax)
 {
     if (!this->graph.lists.listNodes[origin]->hasTaggedUnion)
     {
@@ -55,7 +68,7 @@ void Grammar::writeTaggedUnions(string origin, string parent, string path, strin
                 + " THEN "
                 + x;
     
-            writeStructure(x, parent, true, path, false);
+            writeStructure(x, parent, true, path, false, getMinAndMax);
             this->rules[ruleName] += "\n";
             if (enumerates[z.first]) enumerates.erase(z.first);
         }
@@ -82,7 +95,8 @@ void Grammar::writeRepeatedKeys(string path,
     string parent,
     bool canPrint,
     string ruleName,
-    string parentRule)
+    string parentRule,
+    bool getMinAndMax)
 {
     this->graph.lists.listPaths[path]->read = true;
     this->graph.lists.listPaths[path]->nodes.erase(name);
@@ -112,7 +126,7 @@ void Grammar::writeRepeatedKeys(string path,
         {
             this->rules[parentRule] += " | ";
         }
-        writeStructure(name, parent, canPrint, pathBefore, false);
+        writeStructure(name, parent, canPrint, pathBefore, false, getMinAndMax);
         if (!this->graph.lists.listNodes[name]->isSomeonesTaggedUnion)
         {
             notSomeonesTaggedUnion.insert(name);
@@ -187,7 +201,13 @@ void Grammar::printTuple(Node *node, string ruleName)
     this->rules[ruleName] += "]\n";
 }
 
-void Grammar::writeStructure(string name, string parent, bool canPrint, string path, bool isObjectFromArray)
+void Grammar::writeStructure(
+    string name, 
+    string parent, 
+    bool canPrint, 
+    string path, 
+    bool isObjectFromArray, 
+    bool getMinAndMax)
 {
     string pathBefore = path;
     
@@ -200,7 +220,7 @@ void Grammar::writeStructure(string name, string parent, bool canPrint, string p
     }
 
     string ruleName = "";
-
+    
     if (!this->graph.lists.listPaths[path] || (this->graph.lists.listNodes[name]->isSomeonesTaggedUnion && !canPrint)
         || this->graph.lists.listPaths[path]->nodes.size() == 0) return;
 
@@ -230,6 +250,27 @@ void Grammar::writeStructure(string name, string parent, bool canPrint, string p
         if (!this->graph.lists.listNodes[name]->isEnum)
         {   
             this->rules[parentRule] += writeType(this->graph.lists.listNodes[name]->type);
+            if (this->graph.lists.listNodes[name]->key) 
+            {
+                this->rules[parentRule] += "k";
+            }
+            if (getMinAndMax 
+                && (this->graph.lists.listNodes[name]->type == "integer" 
+                    || this->graph.lists.listNodes[name]->type == "double"))
+            {
+                double min = this->graph.lists.listNodes[name]->min - (this->graph.lists.listNodes[name]->min * MINANDMAXTHRESHOLD);
+                double max = this->graph.lists.listNodes[name]->max + (this->graph.lists.listNodes[name]->max * MINANDMAXTHRESHOLD);
+                if (this->graph.lists.listNodes[name]->type == "integer")
+                {
+                    int mininum = min;
+                    int maximum = max;
+                    this->rules[parentRule] += "(min=" + to_string(mininum)   + "; max=" + to_string(maximum) + ")";
+                }
+                else 
+                {
+                    this->rules[parentRule] += "(min=" + to_string(min)   + "; max=" + to_string(max) + ")";
+                }
+            } 
         }
         else
         {
@@ -261,13 +302,13 @@ void Grammar::writeStructure(string name, string parent, bool canPrint, string p
             if (this->graph.lists.listNodes[name]->hasTaggedUnion) {
                 ruleName = name;
                 this->rules[ruleName] = ruleName + "::= ";
-                writeTaggedUnions(name, parent, pathBefore, ruleName);
+                writeTaggedUnions(name, parent, pathBefore, ruleName, getMinAndMax);
             }
         }
 
         if (!this->graph.lists.listPaths[path]->read 
             && this->graph.lists.listPaths[path]->nodes.size() > 1)
-                writeRepeatedKeys(path, name, pathBefore, parent, canPrint, ruleName, parentRule);
+                writeRepeatedKeys(path, name, pathBefore, parent, canPrint, ruleName, parentRule, getMinAndMax);
         else this->graph.lists.listPaths[path]->read = true;
         return;
     }
@@ -304,11 +345,11 @@ void Grammar::writeStructure(string name, string parent, bool canPrint, string p
                             }
                         else this->rules[ruleName] += " " + nameToDisplay + ": " + nameEdge;
                     }
-                    writeStructure(nameEdge, name, canPrint, path, false);
+                    writeStructure(nameEdge, name, canPrint, path, false, getMinAndMax);
                     aux = aux->next;
                 };
             }
-            writeTaggedUnions(name, parent, pathBefore, ruleName);
+            writeTaggedUnions(name, parent, pathBefore, ruleName, getMinAndMax);
             if (parent == "start_object.object")
             {
                 parent = "root";
@@ -316,7 +357,7 @@ void Grammar::writeStructure(string name, string parent, bool canPrint, string p
 
             if (!this->graph.lists.listPaths[path]->read 
                 && this->graph.lists.listPaths[path]->nodes.size() > 1)
-                    writeRepeatedKeys(path, name, pathBefore, parent, canPrint, ruleName, parent);
+                    writeRepeatedKeys(path, name, pathBefore, parent, canPrint, ruleName, parent, getMinAndMax);
             else this->graph.lists.listPaths[path]->read = true;
             return;
         }
@@ -362,13 +403,20 @@ void Grammar::writeStructure(string name, string parent, bool canPrint, string p
                             string nameEdge = "";
                             if (aux->edge->destiny->name == "") nameEdge = name; 
                             else nameEdge = aux->edge->destiny->name;
-                            string edgePath = path + "." + aux->edge->destiny->name;
+
+                            string edgePath = "";
+                            if (parent == "start_object.object") {
+                                edgePath = path + "." + "array." + aux->edge->destiny->name;
+                            } else {
+                                edgePath = path + "." + aux->edge->destiny->name;
+                            }
+                            
                             if (i == 0)
                             {
                                 if (aux->edge->destiny->type == "object")
                                 {
                                     this->rules[ruleName] += nameEdge + ".object";
-                                    writeStructure(nameEdge, name, true, edgePath, true);
+                                    writeStructure(nameEdge, name, true, edgePath, true, getMinAndMax);
                                 }
                                 else this->rules[ruleName] += aux->edge->destiny->type;
                                 i = 1;
@@ -378,7 +426,7 @@ void Grammar::writeStructure(string name, string parent, bool canPrint, string p
                                 if (aux->edge->destiny->type == "object")
                                 {
                                     this->rules[ruleName] += ", " + nameEdge + ".object";
-                                    writeStructure(nameEdge, name, true, edgePath, true);
+                                    writeStructure(nameEdge, name, true, edgePath, true, getMinAndMax);
                                 }
                                 else this->rules[ruleName] += ", " + aux->edge->destiny->type;
                             }
@@ -394,7 +442,7 @@ void Grammar::writeStructure(string name, string parent, bool canPrint, string p
 
             if (!this->graph.lists.listPaths[path]->read 
                 && this->graph.lists.listPaths[path]->nodes.size() > 1)
-                writeRepeatedKeys(path, name, pathBefore, parent, canPrint, ruleName, parent);
+                writeRepeatedKeys(path, name, pathBefore, parent, canPrint, ruleName, parent, getMinAndMax);
             else this->graph.lists.listPaths[path]->read = true;
             return;
         }

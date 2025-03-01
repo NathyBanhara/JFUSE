@@ -2,6 +2,8 @@
 #include "graph.hpp"
 #include "queue.hpp"
 #include <bits/stdc++.h>
+#include <string>
+#include <regex>
 #include "definitions/define.hpp"
 
 using namespace std;
@@ -65,7 +67,7 @@ void Graph::checkArrayEnum(QueueStruct *q, vector<string> enums, string name)
         this->lists.listNodes[name]->isEnum = false;
 }
 
-Node *createNode (string type, string name, string path)
+Node *createNode (string type, string name, string path, bool canBeKey, double value)
 {
     Node *newOne = new Node;
     newOne->counter = 1;
@@ -75,6 +77,9 @@ Node *createNode (string type, string name, string path)
     newOne->edges = NULL;
     newOne->hasTaggedUnion = false;
     newOne->isSomeonesTaggedUnion = false;
+    newOne->key = canBeKey;
+    newOne->min = value;
+    newOne->max = value;
     if (path != "") newOne->paths[path] = 1;
     if (newOne->type != "array" && newOne->type != "object")
     {
@@ -96,30 +101,7 @@ Node *createNode (string type, string name, string path)
     return newOne;
 }
 
-void Graph::saveEnum(QueueStruct *q)
-{
-    if (q->name == "") return;
-    if (q->value == "") return;
-
-    string name = q->name + "." + q->type;
-
-    if (this->lists.listNodes[name]->isEnum)
-    {
-        if (!this->lists.listNodes[name]->enumerate[q->value])
-        {
-            if (this->lists.listNodes[name]->enumerate.size() + 1 > MAXENUM)
-            {
-                this->lists.listNodes[name]->isEnum = false;
-                this->lists.listNodes[name]->enumerate.clear();
-            }
-            else
-                this->lists.listNodes[name]->enumerate[q->value] = 1;
-        }
-        else this->lists.listNodes[name]->enumerate[q->value]++;
-    }
-}
-
-void Graph::saveEnum2(string name, string value)
+void Graph::saveEnum(string name, string value)
 {
     if (this->lists.listNodes[name]->isEnum)
     {
@@ -212,7 +194,14 @@ void Graph::checkTaggedUnions()
     }
 }
 
-void Graph::insertNode(string name, string type, string path, Node *parent, Node *parentParent)
+void Graph::insertNode(
+    string name, 
+    string type, 
+    string path, 
+    Node *parent, 
+    Node *parentParent, 
+    bool canBeKey, 
+    double value)
 {
     if (parent != NULL && parent->type == "object" && parentParent->type == "array")
     {
@@ -231,11 +220,28 @@ void Graph::insertNode(string name, string type, string path, Node *parent, Node
                 this->lists.listNodes[name + "." + type]->paths[path] = 1;
             else this->lists.listNodes[name + "." + type]->paths[path]++;
         }
+
+        if (!canBeKey)
+        {
+            this->lists.listNodes[name + "." + type]->key = false;
+        }
+       
+        if ((type == "integer" || type == "double") && this->lists.listNodes[name + "." + type]->min > value)
+        {
+            this->lists.listNodes[name + "." + type]->min = value;
+        } 
+        
+        if ((type == "integer" || type == "double") && this->lists.listNodes[name + "." + type]->max < value)
+        {
+            this->lists.listNodes[name + "." + type]->max = value;
+        }
+
         return;
     }
     else
     {
-        Node *newOne = createNode(type, name, path);
+        Node *newOne = createNode(type, name, path, canBeKey, value);
+
         name = name + "." + type;
         this->lists.listNodes[name] = newOne;
         return;
@@ -430,6 +436,55 @@ void Graph::checkEnums()
                     x.second->enumerate.erase(e);
                 }
             }
+        }
+    }
+}
+
+void Graph::checkKeys(string jsonFilename)
+{
+    for (auto x : this->lists.listNodes)
+    {
+        if (x.second->isEnum) 
+        {
+            x.second->key = false;
+        }
+        else if (x.second->key) 
+        {
+            std::string key = x.second->name;
+
+            std::string command =
+                "grep -oE '\"" + key + "\": *\"[^\"]*\"' " + jsonFilename +
+                " | sed 's/\"" + key + "\": *\"//g' | sed 's/\"//g'; " +
+                "grep -oE '\"" + key + "\": *[0-9]+' " + jsonFilename +
+                " | sed 's/\"" + key + "\": *//g'; " +
+                "grep -oE '\"" + key + "\": *[0-9]+\\.[0-9]+' " + jsonFilename +
+                " | sed 's/\"" + key + "\": *//g'";
+
+            FILE *file = popen(command.c_str(), "r");
+            if (file == nullptr) {
+                continue;
+            }
+
+            std::unordered_set<std::string> values;
+            char buffer[1024];
+            while (fgets(buffer, sizeof(buffer), file) != nullptr) {
+                string value(buffer);
+                size_t pos = value.find_last_not_of("\n");
+                if (pos != std::string::npos) {
+                    value.erase(pos + 1);
+                }
+                
+                if (values.find(value) != values.end())
+                {
+                    x.second->key = false;
+                    break;
+                } 
+                else {
+                    values.insert(value);
+                }
+            }
+
+            fclose(file);
         }
     }
 }
