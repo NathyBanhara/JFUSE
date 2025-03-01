@@ -181,6 +181,7 @@ bool sax_event_consumer::string(string_t& val)
         ? false
         : true;
     bool canBeKey = type == "string" && checkIfStringCanBeAKey(val); 
+
     handleKey(type, isEnum, canBeKey, 0);
     if (val.length() > MAXSTRINGLENGHT)
     {
@@ -238,6 +239,11 @@ bool sax_event_consumer::checkIfStringCanBeAKey(string_t& value)
         return true;
     }
 
+    if (isHexadecimal(value))
+    {
+        return true;
+    }
+
     return value.length() <= MAXSTRINGKEYLENGHT;
 }
 
@@ -252,6 +258,11 @@ bool sax_event_consumer::isUUID(string_t& value)
 {
     regex uuid_regex(R"(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)");
     return regex_match(value, uuid_regex);
+}
+
+bool sax_event_consumer::isHexadecimal(const std::string& value) { 
+    static const std::regex hexRegex(R"(^0[xX][0-9a-fA-F]+$|^[0-9a-fA-F]+$)");
+    return std::regex_match(value, hexRegex);
 }
 
 bool sax_event_consumer::start_object(std::size_t elements)

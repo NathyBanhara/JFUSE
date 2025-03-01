@@ -53,6 +53,7 @@ class sax_event_consumer : public json::json_sax_t
         bool checkIfStringCanBeAKey(string_t& value);
         bool isEmail(string_t& value);
         bool isUUID(string_t& value);
+        bool isHexadecimal(const string_t& input);
         bool isDate(std::string date);
         bool isTime(std::string time);
         bool isTimestamp(std::string timestamp);
