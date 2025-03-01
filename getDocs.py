@@ -1,9 +1,9 @@
 nDoc= int(input("Doc quantity: "))
-#fname=("extractSales.json")
-fname=("roam_prescription_based_prediction.jsonl")
+fname=("listingsAndReviews.json")
+#fname=("roam_prescription_based_prediction.jsonl")
 #fname=("yelp_academic_dataset_business.json")
 #fname=("yelp_academic_dataset_user.json")
-fout=open('extractPrescrip.json', 'w')
+fout=open('airbnb.json', 'w')
 #fout=open('salesSimplified.json','w')
 fout.write('{'+'\n')
 with open(fname) as f:
