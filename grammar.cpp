@@ -249,31 +249,28 @@ void Grammar::writeStructure(
         
         if (!this->graph.lists.listNodes[name]->isEnum)
         {   
+            this->rules[parentRule] += writeType(this->graph.lists.listNodes[name]->type);
             if (this->graph.lists.listNodes[name]->key) 
             {
-                this->rules[parentRule] += "key";
+                this->rules[parentRule] += "k";
             }
-            else
+            if (getMinAndMax 
+                && (this->graph.lists.listNodes[name]->type == "integer" 
+                    || this->graph.lists.listNodes[name]->type == "double"))
             {
-                this->rules[parentRule] += writeType(this->graph.lists.listNodes[name]->type);
-                if (getMinAndMax 
-                    && (this->graph.lists.listNodes[name]->type == "integer" 
-                        || this->graph.lists.listNodes[name]->type == "double"))
+                double min = this->graph.lists.listNodes[name]->min - (this->graph.lists.listNodes[name]->min * MINANDMAXTHRESHOLD);
+                double max = this->graph.lists.listNodes[name]->max + (this->graph.lists.listNodes[name]->max * MINANDMAXTHRESHOLD);
+                if (this->graph.lists.listNodes[name]->type == "integer")
                 {
-                    double min = this->graph.lists.listNodes[name]->min - (this->graph.lists.listNodes[name]->min * MINANDMAXTHRESHOLD);
-                    double max = this->graph.lists.listNodes[name]->max + (this->graph.lists.listNodes[name]->max * MINANDMAXTHRESHOLD);
-                    if (this->graph.lists.listNodes[name]->type == "integer")
-                    {
-                        int mininum = min;
-                        int maximum = max;
-                        this->rules[parentRule] += "(min=" + to_string(mininum)   + "; max=" + to_string(maximum) + ")";
-                    }
-                    else 
-                    {
-                        this->rules[parentRule] += "(min=" + to_string(min)   + "; max=" + to_string(max) + ")";
-                    }
-                } 
-            }
+                    int mininum = min;
+                    int maximum = max;
+                    this->rules[parentRule] += "(min=" + to_string(mininum)   + "; max=" + to_string(maximum) + ")";
+                }
+                else 
+                {
+                    this->rules[parentRule] += "(min=" + to_string(min)   + "; max=" + to_string(max) + ")";
+                }
+            } 
         }
         else
         {
