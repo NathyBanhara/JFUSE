@@ -45,6 +45,9 @@ def get_random_id(ids):
     else:
         return id
 
+def get_random_number():
+    return random.randint(1, 7)
+
 def main():
     objects = int(input("Objects: "))
     chunk_size = int(input("Chunk size: "))
@@ -69,6 +72,7 @@ def main():
             file.write(f'                    "director": "{generate_random_string(21)}",\n')
             file.write(f'                    "year": {get_random_movie_year()},\n')
             file.write(f'                    "premiere_date": "{get_random_month()}/{get_random_day()}/{get_random_movie_year()}", \n')
+            file.write(f'                    "evaluation": [{{"stars": {get_random_number()}}}],\n')
             file.write(f'                    "duration": "{get_random_duration()}",\n')
             file.write(f'                    "price": {get_random_price()},\n')
             file.write('                    "genres": ')
