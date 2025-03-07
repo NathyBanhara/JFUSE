@@ -28,6 +28,7 @@ class sax_event_consumer : public json::json_sax_t
         Graph graph = Graph();
         stack<Stack*> myStack;
         Queue queue = Queue();
+        bool getKey;
 
         std::string name = "";
 

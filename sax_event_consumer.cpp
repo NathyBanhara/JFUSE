@@ -103,7 +103,7 @@ bool sax_event_consumer::number_integer(number_integer_t val)
     bool isEnum = val > MAXINT
         ? false
         : true;
-    handleKey("integer", isEnum, true, val);
+    handleKey("integer", isEnum, this->getKey, val);
     
     if (val > MAXINT)
     {
@@ -129,7 +129,7 @@ bool sax_event_consumer::number_unsigned(number_unsigned_t val)
     bool isEnum = val > MAXINT
         ? false
         : true;
-    handleKey("integer", isEnum, true, val);
+    handleKey("integer", isEnum, this->getKey, val);
     if (val > MAXINT)
     {
         queue.push(queue.createStruct(auxName, "integer", ""));
@@ -180,9 +180,10 @@ bool sax_event_consumer::string(string_t& val)
     bool isEnum = val.length() > MAXSTRINGLENGHT || type != "string"
         ? false
         : true;
-    bool canBeKey = type == "string" && checkIfStringCanBeAKey(val); 
-
+    
+    bool canBeKey = this->getKey && type == "string" && checkIfStringCanBeAKey(val); 
     handleKey(type, isEnum, canBeKey, 0);
+    
     if (val.length() > MAXSTRINGLENGHT)
     {
         queue.push(queue.createStruct(auxName, type, ""));

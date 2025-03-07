@@ -18,10 +18,13 @@ int main(int argc, char *argv[])
     string jsonFilename = argv[2];
     string fileGenerated = argv[3];
     string getMinAndMax = argv[4];
+    string getKey = argv[5];
     
     std::ifstream text(jsonFilename);
 
     sax_event_consumer sec;
+
+    sec.getKey = getKey == "true";
 
     bool result = json::sax_parse(text, &sec);
     
@@ -30,7 +33,10 @@ int main(int argc, char *argv[])
     printf("\n");
     
     sec.graph.checkEnums();
-    sec.graph.checkKeys(jsonFilename);
+
+    if (sec.getKey) {
+        sec.graph.checkKeys(jsonFilename);
+    }
 
     sec.graph.getTaggedUnions(sec.queue.front()->name, sec.queue.front()->type, " ", sec.queue);
     sec.graph.checkTaggedUnions();
