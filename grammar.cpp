@@ -264,7 +264,7 @@ void Grammar::writeStructure(
                 {
                     int mininum = min;
                     int maximum = max;
-                    this->rules[parentRule] += "(min=" + to_string(mininum)   + "; max=" + to_string(maximum) + ")";
+                    this->rules[parentRule] += "(min=" + to_string(mininum)   + " max=" + to_string(maximum) + ")";
                 }
                 else 
                 {

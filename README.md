@@ -7,12 +7,12 @@
 $ g++ -o main *.cpp
 ```
 ```sh
-$ ./main 2 <json collection> <schema name> <show min and max: true or false>
+$ ./main 4 <json collection> <schema name> <extract min and max> <extract key>
 ```
 
 ### Example
 ```sh
-$ ./main 2 data.json structure.txt
+$ ./main 4 data.json structure.txt true true
 ```
 
 ### More
