@@ -38,13 +38,6 @@ def get_random_price():
 def get_random_pages():
     return random.randint(200, 850)
 
-def get_random_id(ids):
-    id = random.randint(1, 2000000000)
-    if (id in ids):
-        get_random_id(ids)
-    else:
-        return id
-
 def get_random_number():
     return random.randint(1, 7)
 
@@ -52,25 +45,21 @@ def show_key():
     number = random.randint(1, 10)
     return number % 3 == 1 
 
-
 def main():
     objects = int(input("Objects: "))
-    chunk_size = int(input("Chunk size: "))
-    ids = []
+    chunk_size = 1
+    id = -1
 
     with open("data.json", "w") as file:
         file.write('{\n')
 
         for i in range(objects):
-            id1 = get_random_id(ids)
-            ids.append(id1)
-            id2 = get_random_id(ids)
-            ids.append(id2)
+            id = id + 1
             file.write(f'    "hogwarts_will_always_be_there": ')
             file.write('{\n')
             file.write('        "media": [\n')
             file.write('            {\n')
-            file.write(f'                "_id": {id1},\n')
+            file.write(f'                "_id": {id},\n')
             file.write('                "type": "cinematography",\n')
             file.write('                "movie": {\n')
             file.write(f'                    "title": "{generate_random_string(21)}",\n')
@@ -90,7 +79,8 @@ def main():
             file.write('                }\n')
             file.write('            },\n')
             file.write('            {\n')
-            file.write(f'                "_id": {id2},\n')
+            id = id + 1
+            file.write(f'                "_id": {id},\n')
             file.write('                "type": "text",\n')
             file.write('                "book": {\n')
             file.write(f'                    "title": "{generate_random_string(21)}",\n')
