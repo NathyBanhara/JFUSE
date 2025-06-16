@@ -440,7 +440,7 @@ void Graph::checkEnums()
     }
 }
 
-void Graph::checkKeys(string jsonFilename)
+void Graph::checkKeys(string jsonFilename, int threshold)
 {
     for (auto x : this->lists.listNodes)
     {
@@ -467,19 +467,27 @@ void Graph::checkKeys(string jsonFilename)
 
             std::unordered_set<std::string> values;
             char buffer[1024];
+            int occurances = 0;
             while (fgets(buffer, sizeof(buffer), file) != nullptr) {
                 string value(buffer);
                 size_t pos = value.find_last_not_of("\n");
-                if (pos != std::string::npos) {
+                if (pos != std::string::npos) 
+                {
                     value.erase(pos + 1);
                 }
                 
                 if (values.find(value) != values.end())
                 {
-                    x.second->key = false;
+                    occurances++;
+                    if (occurances > threshold) 
+                    {
+                        x.second->key = false;
+                    }
+                    
                     break;
                 } 
                 else {
+                    occurances++;
                     values.insert(value);
                 }
             }

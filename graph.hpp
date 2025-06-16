@@ -115,7 +115,7 @@ public:
     void insertEdge(string origin, string destiny, string relationshipType, string value);
     void setArray(string name, int counter, unordered_map<string, int> set);
     void checkEnums();
-    void checkKeys(string jsonFilename);
+    void checkKeys(string jsonFilename, int threshold);
     void setCollectionStructure(queue<std::string> children, Node *node);
     void checkTupleAndCollection();
     void checkObject(Node *node);

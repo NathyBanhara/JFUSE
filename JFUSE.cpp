@@ -19,6 +19,7 @@ int main(int argc, char *argv[])
     string fileGenerated = argv[3];
     string getMinAndMax = argv[4];
     string getKey = argv[5];
+    string keyThreshold = argv[6];
     
     std::ifstream text(jsonFilename);
 
@@ -34,8 +35,9 @@ int main(int argc, char *argv[])
     
     sec.graph.checkEnums();
 
-    if (sec.getKey) {
-        sec.graph.checkKeys(jsonFilename);
+    int threshold = std::stoi(keyThreshold);
+    if (sec.getKey && threshold > 0) {
+        sec.graph.checkKeys(jsonFilename, threshold);
     }
 
     sec.graph.getTaggedUnions(sec.queue.front()->name, sec.queue.front()->type, " ", sec.queue);
