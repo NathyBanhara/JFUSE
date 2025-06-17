@@ -6,6 +6,7 @@
 #include "graph.hpp"
 #include "definitions/define.hpp"
 #include <set>
+#include <cmath>
 
 Grammar::Grammar(Graph graph, string fileGenerated)
 {
@@ -262,9 +263,9 @@ void Grammar::writeStructure(
                 double max = this->graph.lists.listNodes[name]->max + (this->graph.lists.listNodes[name]->max * MINANDMAXTHRESHOLD);
                 if (this->graph.lists.listNodes[name]->type == "integer")
                 {
-                    int mininum = min;
-                    int maximum = max;
-                    this->rules[parentRule] += "(min=" + to_string(mininum)   + " max=" + to_string(maximum) + ")";
+                    int mininum = floor(min);
+                    int maximum = ceil(max);
+                    this->rules[parentRule] += "(min=" + to_string(mininum)   + "; max=" + to_string(maximum) + ")";
                 }
                 else 
                 {
